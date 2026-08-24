@@ -109,6 +109,37 @@ catalogue's guess, it raises *both* `severity` and `base_severity` — the
 report trusts what it actually read in the request over what an event name
 usually implies.
 
+## Employment status frames the report, timing escalates individual events
+
+These are two different mechanisms and it's worth keeping them separate.
+
+**Timing escalation** (in `enrich()`) is per-event: any single action
+timestamped after `--last-day` gets `severity` bumped to critical and the
+`"After last working day"` flag, regardless of what else is going on. This
+is unconditional — it doesn't ask whether the person has *actually* left
+yet, only whether the timestamp is later than the date you supplied.
+
+**Employment status** (`employment_status()` in `aws_audit_report.py`) is
+report-wide framing for a non-technical reader, computed from the same two
+dates against the real clock at report-build time:
+
+| Status | Condition | What the report tells HR |
+| --- | --- | --- |
+| `active` | no `--notice-date` or `--last-day` supplied | Nothing is measured against a departure date. Treat this as an ordinary access review. |
+| `notice_period` | a date is supplied, but "now" is still before it | Continued activity is expected — they still have a job to do. Nothing is escalated on timing yet. |
+| `departed` | `--last-day` is supplied and has passed | Post-departure activity has no ordinary work justification and is the one thing worth chasing immediately. |
+
+This status renders as a plain-English section titled "Reading this report
+without a technical background" at the top of both the HTML and Markdown
+report — see `hr_explainer_paragraphs()`. It exists because severity labels
+alone read as verdicts to someone who doesn't know what an API call is;
+this section is the difference between "critical" meaning "call security"
+and meaning "worth one Slack message to check."
+
+If you change the wording, keep it in `hr_explainer_paragraphs()` only —
+both renderers call it, so there is exactly one copy of this text to keep
+accurate.
+
 ## Extending the detectors
 
 **Add a catalogue entry** in `audit_intel.CURATED_CATALOG`, keyed on

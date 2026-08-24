@@ -226,6 +226,14 @@ h1 .subject{font-family:"IBM Plex Mono",monospace;font-weight:500;display:block;
 .caveat{margin-top:26px;padding:13px 16px;background:#E3E9EE;border-left:3px solid var(--medium);
   font-size:13.5px;color:#33465A}
 
+.hr-guide{margin:28px 0 36px;padding:20px 24px;background:var(--card);
+  border:1px solid var(--rule);border-left:4px solid var(--good)}
+.hr-guide h2{margin:0 0 12px;font-size:17px}
+.hr-guide p{margin:0 0 12px;font-size:14px;line-height:1.6;color:#33465A}
+.hr-guide p:last-child{margin-bottom:0;padding:12px 14px;background:var(--wash);
+  border-left:3px solid var(--focus)}
+.hr-guide code{background:var(--wash);padding:1px 5px;border-radius:3px}
+
 .tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:1px;
   background:var(--rule);border:1px solid var(--rule);margin:36px 0 8px}
 .tally div{background:var(--card);padding:18px 16px}
@@ -553,6 +561,96 @@ def group_events(rows):
     return sorted(by_event.items(), key=rank)
 
 
+def employment_status(ctx) -> str:
+    """Where the subject stands relative to departure, for HR-facing framing.
+
+    Deliberately independent of per-event severity math: an "active" or
+    "notice_period" subject can still have high-severity findings (a risky
+    change is still worth reviewing), but nothing is escalated to critical
+    purely on timing unless they have actually left. See enrich()'s
+    "After last working day" flag, which this mirrors.
+    """
+    last_dt = ctx.get("_last_day_dt")
+    notice_dt = ctx.get("_notice_dt")
+    now = datetime.now(timezone.utc)
+    if last_dt and now > last_dt:
+        return "departed"
+    if last_dt or notice_dt:
+        return "notice_period"
+    return "active"
+
+
+EMPLOYMENT_STATUS_LABEL = {
+    "active": "Currently employed",
+    "notice_period": "Notice period — still employed",
+    "departed": "Departed",
+}
+
+
+def hr_explainer_paragraphs(ctx) -> list[str]:
+    """Plain-English framing for a non-technical reviewer (HR, IT lead).
+
+    Kept separate from the technical caveat above it: that one is aimed at
+    someone who already knows what an API call is. This is for someone who
+    doesn't, and who will otherwise read "critical" as a verdict rather than
+    a priority order.
+    """
+    status = employment_status(ctx)
+    last_day = ctx.get("last_day") or "not supplied"
+    notice = ctx.get("notice") or "not supplied"
+
+    paras = [
+        "<strong>What this report is.</strong> It lists what this person's AWS account "
+        "was used to do, automatically labelled by how much damage that kind of action "
+        "could cause if misused — not by whether anything was actually misused. "
+        "Software cannot read intent from a log. A “critical” item means "
+        "“this is worth a human asking a question,” not “this person did "
+        "something wrong.”",
+        "<strong>How to read the four levels.</strong> "
+        "<strong>Critical</strong> — could grant lasting access or destroy something, "
+        "and here it happened after they left. Ask about it the same day. "
+        "<strong>High</strong> — a meaningful change to access or security settings; "
+        "worth a quick check against a ticket. <strong>Medium</strong> — unusual enough "
+        "to log, rarely worth a conversation on its own. <strong>Low</strong> — routine "
+        "day-to-day activity.",
+        "<strong>What actually makes something suspicious.</strong> Severity alone doesn't. "
+        "Look for the combination: no matching change ticket or handover note, activity that "
+        "doesn't match this person's normal job, denied or repeatedly-retried attempts "
+        "(a sign of someone probing rather than working), and — for anyone who has left — "
+        "anything at all happening after their last working day. One of these is a question. "
+        "Several together are a reason to escalate.",
+    ]
+
+    if status == "active":
+        paras.append(
+            "<strong>Employment status: currently employed.</strong> No departure date has "
+            "been given, so nothing below is measured against one. Every finding here is "
+            "ordinary day-to-day activity from someone still doing their job — review it "
+            "the way you would any access review, not as an offboarding investigation. "
+            "Re-run this report with <code>--last-day</code> once a leaving date is confirmed."
+        )
+    elif status == "notice_period":
+        paras.append(
+            f"<strong>Employment status: notice period, still employed</strong> "
+            f"(notice given {esc(notice)}, last working day {esc(last_day)}). Continued access "
+            "and activity during notice is expected — this person still has a job to do "
+            "until they leave. Nothing is escalated to critical purely for timing yet; that "
+            "only happens for activity dated after the last working day above, which hasn't "
+            "arrived. Treat findings here as normal handover work unless something is clearly "
+            "outside their role."
+        )
+    else:
+        paras.append(
+            f"<strong>Employment status: departed</strong> (last working day {esc(last_day)}). "
+            "Anything timestamped after that date is automatically escalated to critical and "
+            "listed on the timeline below — this person should have had no work reason to "
+            "touch these systems once they'd left. There are innocent explanations (a scheduled "
+            "job, a shared service credential, a colleague using their own access from a similar "
+            "session), but each one needs to be confirmed, not assumed."
+        )
+    return paras
+
+
 def parse_review_date(value: str, tz, end_of_day: bool = False) -> datetime:
     """Parse a date-only CLI boundary in the report's display timezone."""
     parsed = datetime.strptime(value, "%Y-%m-%d")
@@ -601,6 +699,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
                          ("Event scope", str(coverage.get("event_scope", "management")).capitalize()),
                          ("Notice given", ctx["notice"] or "not supplied"),
                          ("Last working day", ctx["last_day"] or "not supplied"),
+                         ("Employment status", EMPLOYMENT_STATUS_LABEL[employment_status(ctx)]),
                          ("Report generated", ctx["generated"])]:
         p.append(f"<div><dt>{esc(label)}</dt><dd>{esc(value)}</dd></div>")
     p.append("</dl>")
@@ -609,8 +708,15 @@ def render_html(rows, sequences, analysis, ctx) -> str:
              "an engineer's history are their job. Confirm each item against change tickets and "
              "planned work before drawing any conclusion.</p></header>")
 
+    p.append("<section class='hr-guide' id='hr-guide'>"
+             "<h2>Reading this report without a technical background</h2>")
+    for para in hr_explainer_paragraphs(ctx):
+        p.append(f"<p>{para}</p>")
+    p.append("</section>")
+
     p.append("<nav class='jump' aria-label='Dashboard sections'>"
-             "<a href='#overview'>Overview</a><a href='#coverage'>Coverage</a>"
+             "<a href='#overview'>Overview</a><a href='#hr-guide'>Read this first</a>"
+             "<a href='#coverage'>Coverage</a>"
              "<a href='#timeline'>Timeline</a><a href='#findings'>Findings</a>"
              "<a href='#activity'>Activity</a></nav>")
     p.append(render_filter_controls(groups, account_options, categories, states))
@@ -882,10 +988,19 @@ def render_markdown(rows, sequences, analysis, ctx) -> str:
            f"- **Event scope:** {md_escape(coverage.get('event_scope', 'management'))}",
            f"- **Notice given:** {md_escape(ctx['notice'] or 'not supplied')}",
            f"- **Last working day:** {md_escape(ctx['last_day'] or 'not supplied')}",
+           f"- **Employment status:** {md_escape(EMPLOYMENT_STATUS_LABEL[employment_status(ctx)])}",
            f"- **Findings:** {counts.get(C,0)} critical, {counts.get(H,0)} high, "
            f"{counts.get(M,0)} medium, {counts.get(L,0)} low", "",
            "> Ratings describe what an action can do, not what it did. Confirm against change "
-           "tickets before drawing conclusions.", ""]
+           "tickets before drawing conclusions.", "",
+           "## Reading this report without a technical background", ""]
+    for para in hr_explainer_paragraphs(ctx):
+        # The HTML strings use <strong>/<code> for emphasis; keep Markdown legible
+        # by converting those two tags rather than maintaining a second copy of the text.
+        md_para = (para.replace("<strong>", "**").replace("</strong>", "**")
+                        .replace("<code>", "`").replace("</code>", "`"))
+        out.append(md_para)
+        out.append("")
 
     if analysis:
         out += ["## Analyst assessment", "",
