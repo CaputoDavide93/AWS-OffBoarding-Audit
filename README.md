@@ -2,15 +2,19 @@
 
 **Cross-account CloudTrail collection, backdoor detection, and a local investigation dashboard for cloud engineer offboarding.**
 
+[![Security and tests](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml/badge.svg)](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml)
 ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![AWS CloudTrail](https://img.shields.io/badge/AWS-CloudTrail-FF9900?logo=amazonwebservices&logoColor=white)
-![Security](https://img.shields.io/badge/Secrets-Gitleaks-2E7D32)
+![Read-only](https://img.shields.io/badge/AWS%20access-read--only-2E7D32)
+![Secrets](https://img.shields.io/badge/Secrets-Gitleaks-2E7D32)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
+- [Read-only, by design](#-read-only-by-design)
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [Quick Start](#-quick-start)
@@ -30,6 +34,12 @@ AWS Offboarding Audit reviews a departing engineer's activity across every AWS a
 through IAM Identity Center. It collects CloudTrail events, checks request parameters for durable
 access and destructive changes, and builds a portable HTML dashboard for the security or IT team.
 
+<p align="center">
+  <img src="docs/screenshot.png" alt="AWS Offboarding Audit dashboard showing severity, account, and category filters over a CloudTrail timeline" width="820">
+</p>
+
+<p align="center"><sub>A fully synthetic example is in <a href="docs/example-report.html">docs/example-report.html</a> — download and open it locally, no account IDs are real.</sub></p>
+
 The report separates three different facts:
 
 | Signal | Meaning |
@@ -40,6 +50,16 @@ The report separates three different facts:
 
 Severity is a review priority, not a statement of intent. Confirm every item against change tickets
 and planned work before taking action.
+
+## 🔒 Read-only, by design
+
+Every AWS call this project makes is a `Get*`, `List*`, `Describe*`, or `LookupEvents` call — the
+kind you'd use to read state, never to change it. There is no `Create*`, `Put*`, `Delete*`,
+`Update*`, `Terminate*`, `Modify*`, `Attach*`/`Detach*`, or `Revoke*` call anywhere in this
+codebase. Running it cannot alter, disable, or delete anything in your AWS accounts.
+
+The only network calls that leave AWS entirely are the optional [external analysis](#-external-analysis)
+pass to the Anthropic API, and even that sends a bounded findings digest, never raw logs.
 
 ## ✨ Features
 
@@ -90,7 +110,7 @@ cp audit-config.example.yaml audit-config.yaml
 
 `audit-config.yaml` is ignored by Git. Store organization account IDs and SSO settings there.
 
-### Check The Scope
+### Check the scope
 
 ```bash
 aws sso login --sso-session company
@@ -102,7 +122,7 @@ aws sso login --sso-session company
 
 Preflight discovers accounts and writes the collection plan without querying CloudTrail.
 
-### Collect And Build The Dashboard
+### Collect and build the dashboard
 
 ```bash
 .venv/bin/python aws_offboarding_dashboard.py \
@@ -162,8 +182,9 @@ Review the SQL before executing a Lake query:
   --dry-run
 ```
 
-Remove `--dry-run` to execute with the active AWS credentials. Existing Lake or Athena JSON/CSV
-exports can be normalized with `--input <file>`.
+Remove `--dry-run` to execute with the active AWS credentials. `start_query`/`get_query_results` is
+a read query against your event data store — still read-only, no write API involved. Existing Lake
+or Athena JSON/CSV exports can be normalized with `--input <file>`.
 
 ## 🔬 External Analysis
 
@@ -207,8 +228,8 @@ See [SECURITY.md](SECURITY.md) for handling and rotation guidance.
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
-The security workflow can also be run manually from the GitHub Actions tab when hosted runners are
-available.
+CI runs this same suite plus Gitleaks on every push and pull request to `main`, and can also be
+triggered manually from the GitHub Actions tab.
 
 ## ⚠ Limits
 
@@ -219,4 +240,7 @@ available.
 - Collection denials and logging changes create visible coverage gaps.
 - Current-state reconciliation is best effort; unsupported or denied checks remain `unknown`.
 
-Detector internals, data contracts, and extension notes are in [HANDOFF.md](HANDOFF.md).
+---
+
+Detector internals, data contracts, and extension notes for maintainers are in
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). Licensed under [MIT](LICENSE).
