@@ -226,13 +226,33 @@ h1 .subject{font-family:"IBM Plex Mono",monospace;font-weight:500;display:block;
 .caveat{margin-top:26px;padding:13px 16px;background:#E3E9EE;border-left:3px solid var(--medium);
   font-size:13.5px;color:#33465A}
 
-.hr-guide{margin:28px 0 36px;padding:20px 24px;background:var(--card);
+.hr-guide{margin:28px 0 0;padding:20px 24px;background:var(--card);
   border:1px solid var(--rule);border-left:4px solid var(--good)}
 .hr-guide h2{margin:0 0 12px;font-size:17px}
 .hr-guide p{margin:0 0 12px;font-size:14px;line-height:1.6;color:#33465A}
 .hr-guide p:last-child{margin-bottom:0;padding:12px 14px;background:var(--wash);
   border-left:3px solid var(--focus)}
 .hr-guide code{background:var(--wash);padding:1px 5px;border-radius:3px}
+
+/* Default view hides anything tagged .tech — raw event names, timestamps,
+   regions, request parameters, MITRE tactics, filter tooling. Flipping the
+   switch below adds .technical to <body>, which reveals it all again. This
+   is presentation-only: every underlying number is identical in both modes. */
+.view-switch{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  margin:18px 0 30px;padding:14px 18px;background:var(--wash);
+  border:1px solid var(--rule);border-radius:4px;font-size:13.5px}
+.view-switch .vs-label{color:var(--muted)}
+.view-switch .vs-mode{font-weight:600;color:var(--ink)}
+.switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider{position:absolute;inset:0;background:var(--rule);border-radius:24px;
+  cursor:pointer;transition:.15s}
+.switch .slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;
+  background:#fff;border-radius:50%;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.switch input:checked + .slider{background:var(--focus)}
+.switch input:checked + .slider:before{transform:translateX(18px)}
+.switch input:focus-visible + .slider{outline:2px solid var(--focus);outline-offset:2px}
+body:not(.technical) .tech{display:none}
 
 .tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:1px;
   background:var(--rule);border:1px solid var(--rule);margin:36px 0 8px}
@@ -471,6 +491,25 @@ DASHBOARD_JS = r"""
 })();
 """
 
+VIEW_TOGGLE_JS = r"""
+(() => {
+    const toggle = document.getElementById('tech-toggle');
+    const label = document.getElementById('view-mode-label');
+    if (!toggle || !label) return;
+    const KEY = 'aws-audit-view-mode';
+    const setMode = (technical) => {
+        document.body.classList.toggle('technical', technical);
+        toggle.checked = technical;
+        label.textContent = technical ? 'Full technical detail' : 'Plain-English summary';
+        try { localStorage.setItem(KEY, technical ? 'technical' : 'simple'); } catch (e) {}
+    };
+    let saved = 'simple';
+    try { saved = localStorage.getItem(KEY) || 'simple'; } catch (e) {}
+    setMode(saved === 'technical');
+    toggle.addEventListener('change', () => setMode(toggle.checked));
+})();
+"""
+
 
 def esc(v) -> str:
     return html.escape(str(v if v is not None else ""))
@@ -511,7 +550,7 @@ def json_for_html(value) -> str:
 
 def render_filter_controls(groups, account_options, categories, states) -> str:
     return (
-        "<section class='controls' aria-label='Finding filters'><div class='control-grid'>"
+        "<section class='controls tech' aria-label='Finding filters'><div class='control-grid'>"
         "<div class='field search'><label for='filter-query'>Search evidence</label>"
         "<input id='filter-query' type='search' placeholder='Action, target, account, IP'></div>"
         "<div class='field'><label for='filter-severity'>Severity</label>"
@@ -714,7 +753,17 @@ def render_html(rows, sequences, analysis, ctx) -> str:
         p.append(f"<p>{para}</p>")
     p.append("</section>")
 
-    p.append("<nav class='jump' aria-label='Dashboard sections'>"
+    p.append(
+        "<div class='view-switch'>"
+        "<label class='switch'><input type='checkbox' id='tech-toggle' "
+        "aria-describedby='view-mode-hint'><span class='slider'></span></label>"
+        "<span class='vs-label'>Showing:</span> "
+        "<span class='vs-mode' id='view-mode-label'>Plain-English summary</span>"
+        "<span class='vs-label' id='view-mode-hint'>— switch on for API names, "
+        "timestamps, regions, and raw request data</span>"
+        "</div>")
+
+    p.append("<nav class='jump tech' aria-label='Dashboard sections'>"
              "<a href='#overview'>Overview</a><a href='#hr-guide'>Read this first</a>"
              "<a href='#coverage'>Coverage</a>"
              "<a href='#timeline'>Timeline</a><a href='#findings'>Findings</a>"
@@ -731,7 +780,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
     successful_units = coverage.get("successful_units", "unknown")
     failed_units = coverage.get("failed_units", "unknown")
     truncated = coverage.get("request_params_truncated", 0)
-    p.append(f"<section class='coverage {coverage_class}' id='coverage'>"
+    p.append(f"<section class='coverage tech {coverage_class}' id='coverage'>"
              "<div class='coverage-head'><div><h2>Collection coverage</h2>"
              "<div class='dim'>Completeness is evidence. Missing access is not zero activity.</div></div>"
              f"<span class='status {coverage_class}'>{esc(coverage_status)}</span></div>")
@@ -783,7 +832,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
                          + "".join(f"<li>{esc(q)}</li>" for q in qs) + "</ul></div>")
 
     if sequences:
-        p.append("<h2>Sequences worth attention</h2>")
+        p.append("<div class='tech'><h2>Sequences worth attention</h2>")
         for s in sequences:
             p.append(f"<div class='pattern'><h3>{esc(s['title'])}</h3><p>{esc(s['body'])}</p>"
                      "<div class='chips'>"
@@ -791,6 +840,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
                      f"<span class='chip'>{esc(s.get('target_key') or 'multiple targets')}</span>"
                      + "".join(f"<span class='chip'>{esc(e)}</span>" for e in s["events"][:8])
                      + "</div></div>")
+        p.append("</div>")
 
     # The spine earns its place by being short. An event qualifies on its own
     # merits (curated as serious), on evidence (a parameter-level finding), or
@@ -816,7 +866,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
         else:
             ticks.append({"key": key, "row": r, "n": 1, "regions": {r.get("region", "")}})
 
-    p.append("<h2 id='timeline'>Timeline of notable actions</h2>")
+    p.append("<div class='tech'><h2 id='timeline'>Timeline of notable actions</h2>")
     if ticks or post_reads:
         p.append("<div class='spine'>")
         done = False
@@ -854,6 +904,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
     else:
         p.append("<p class='dim'>No high or critical actions in this window. The activity below "
                  "is routine change.</p>")
+    p.append("</div>")
 
     p.append("<h2 id='findings'>Actions requiring context</h2>")
     for name, evts in groups:
@@ -891,7 +942,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
         p.append(f"<div class='verify'><span class='f-label'>What to verify</span>"
                  f"{esc(f['verify'])}</div>")
 
-        chips = [f"<span class='chip'>MITRE: {esc(t)}</span>" for t in f.get("tactics", [])]
+        chips = [f"<span class='chip tech'>MITRE: {esc(t)}</span>" for t in f.get("tactics", [])]
         if f.get("used_in_wild"):
             inc = f.get("incidents") or []
             if inc and inc[0].get("link"):
@@ -912,7 +963,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
         if chips:
             p.append("<div class='chips'>" + "".join(chips) + "</div>")
 
-        p.append("<table><tr><th>When (local)</th><th>Account</th><th>Region</th>"
+        p.append("<div class='tech'><table><tr><th>When (local)</th><th>Account</th><th>Region</th>"
              "<th>Target</th><th>Resource / parameters</th><th>Source IP</th></tr>")
         for e in evts[:12]:
             detail = e.get("resources") or e.get("request_params") or ""
@@ -926,7 +977,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
         if len(evts) > 12:
             p.append(f"<p class='dim' style='margin-top:10px;font-size:12px'>"
                      f"Showing 12 of {len(evts)}. Full detail is in the CSV.</p>")
-        p.append("</div></article>")
+        p.append("</div></div></article>")
 
     by_day = Counter(r["_local"].strftime("%Y-%m-%d") for r in rows)
     if by_day:
@@ -963,7 +1014,8 @@ def render_html(rows, sequences, analysis, ctx) -> str:
              "Wavestone RiskInsight, Hacking the Cloud, HackTricks Cloud, and Datadog Stratus "
              "Red Team.</footer>"
              f"<script type='application/json' id='report-data'>{json_for_html(payload)}</script>"
-             f"<script>{DASHBOARD_JS}</script></div></body></html>")
+             f"<script>{DASHBOARD_JS}</script>"
+             f"<script>{VIEW_TOGGLE_JS}</script></div></body></html>")
     return "\n".join(p)
 
 
