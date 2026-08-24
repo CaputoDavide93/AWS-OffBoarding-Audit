@@ -25,6 +25,7 @@
 - [Security](#-security)
 - [Testing](#-testing)
 - [Limits](#-limits)
+- [Documentation](#-documentation)
 
 ---
 
@@ -242,5 +243,14 @@ triggered manually from the GitHub Actions tab.
 
 ---
 
-Detector internals, data contracts, and extension notes for maintainers are in
-[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). Licensed under [MIT](LICENSE).
+## 📚 Documentation
+
+| Doc | Type | For |
+| --- | --- | --- |
+| [docs/tutorial-getting-started.md](docs/tutorial-getting-started.md) | Tutorial | First run, synthetic then real |
+| [docs/howto-guide.md](docs/howto-guide.md) | How-to | Specific tasks: SSO setup, baselines, Lake, AI analysis, archiving |
+| [docs/reference-cli.md](docs/reference-cli.md) | Reference | Every flag, across all six scripts |
+| [docs/reference-data-contract.md](docs/reference-data-contract.md) | Reference | The event JSON schema, collector → report |
+| [docs/explanation-architecture.md](docs/explanation-architecture.md) | Explanation | Pipeline design, severity model, detector internals, extension points |
+
+Licensed under [MIT](LICENSE).
