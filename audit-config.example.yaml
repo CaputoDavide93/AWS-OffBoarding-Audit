@@ -1,0 +1,14 @@
+collector:
+  user: leaver@example.com
+  sso_session: company
+  days: 30
+  all_regions: true
+  include_reads: false
+  loose: false
+  role_preference:
+    - SecurityAudit
+    - ReadOnlyAccess
+  account_concurrency: 4
+  region_concurrency: 3
+  request_params_limit: 32768
+  out: aws_offboarding_audit
