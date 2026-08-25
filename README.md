@@ -36,11 +36,8 @@ AWS Offboarding Audit reviews a departing engineer's activity across every AWS a
 through IAM Identity Center. It collects CloudTrail events, checks request parameters for durable
 access and destructive changes, and builds a portable HTML dashboard for the security or IT team.
 
-<p align="center">
-  <img src="docs/screenshot.png" alt="AWS Offboarding Audit dashboard showing severity, account, and category filters over a CloudTrail timeline" width="820">
-</p>
-
-<p align="center"><sub>A fully synthetic example is in <a href="docs/example-report.html">docs/example-report.html</a>. Download and open it locally; no account IDs in it are real.</sub></p>
+A fully synthetic example is in [docs/example-report.html](docs/example-report.html). Download it
+and open it locally to see the dashboard before running anything; no account IDs in it are real.
 
 The report separates three different facts:
 
