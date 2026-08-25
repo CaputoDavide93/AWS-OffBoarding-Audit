@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -8,6 +9,8 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from botocore.exceptions import ClientError
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from audit_analyst import validate_analysis
 from audit_baseline import build_baseline

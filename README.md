@@ -127,7 +127,7 @@ defaults. Command-line values override both.
 ```bash
 aws sso login --sso-session company
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --preflight
 ```
@@ -137,7 +137,7 @@ Preflight discovers accounts and writes the collection plan without querying Clo
 ### Collect and build the dashboard
 
 ```bash
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --notice-date 2026-07-24 \
   --last-day 2026-08-15 \
@@ -148,17 +148,21 @@ Preflight discovers accounts and writes the collection plan without querying Clo
 Add `--resume` after an interrupted collection. The dashboard is a self-contained local HTML file
 and does not need a web server.
 
+Every command in this README writes to the current directory by default. Point `--out` and
+`--raw-out` at `working/` instead (e.g. `--out working/aws_offboarding_report`) to keep generated
+evidence out of the repo root; that path is already gitignored.
+
 ## ✅ Current-State Checks
 
 CloudTrail records a historical change. It cannot prove that the change still exists. Run the
 read-only reconciler after collection:
 
 ```bash
-.venv/bin/python aws_current_state.py aws_offboarding_audit.json \
+.venv/bin/python src/aws_current_state.py aws_offboarding_audit.json \
   --sso-session company \
   --out aws_offboarding.state.json
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --input aws_offboarding_audit.json \
   --state aws_offboarding.state.json \
   --out aws_offboarding_report
@@ -172,7 +176,7 @@ the resource was removed.
 Use at least three comparable peer or historical collections:
 
 ```bash
-.venv/bin/python audit_baseline.py peer-a.json peer-b.json peer-c.json \
+.venv/bin/python src/audit_baseline.py peer-a.json peer-b.json peer-c.json \
   --label "Platform engineering peers" \
   --out platform.baseline.json
 ```
@@ -185,7 +189,7 @@ security severity.
 Review the SQL before executing a Lake query:
 
 ```bash
-.venv/bin/python aws_cloudtrail_lake.py \
+.venv/bin/python src/aws_cloudtrail_lake.py \
   --event-data-store 12345678-1234-1234-1234-123456789012 \
   --user leaver@example.com \
   --start 2026-08-01T00:00:00Z \
@@ -205,7 +209,7 @@ CloudTrail logs are not sent. Keep the API key in the process environment:
 ```bash
 export ANTHROPIC_API_KEY="..."
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --input aws_offboarding_audit.json \
   --analyze \
   --redact
@@ -241,7 +245,7 @@ Local Git hooks run both the repository scanner and Gitleaks before commits and 
 when packaging evidence:
 
 ```bash
-.venv/bin/python aws_offboarding_audit.py \
+.venv/bin/python src/aws_offboarding_audit.py \
   --config audit-config.yaml \
   --archive \
   --encrypt-recipient age1example

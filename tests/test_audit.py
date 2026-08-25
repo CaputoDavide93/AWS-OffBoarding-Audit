@@ -7,6 +7,10 @@ import unittest
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
+
 from audit_intel import C, H, L, M, detect_content
 from aws_audit_report import (
     assess_action,
@@ -26,7 +30,6 @@ from aws_offboarding_audit import (
 )
 
 
-ROOT = Path(__file__).resolve().parents[1]
 ORG_ACCOUNTS = {"111122223333", "444455556666", "777788889999", "222233334444"}
 
 
@@ -346,7 +349,7 @@ class CliIntegrationTests(unittest.TestCase):
     def test_fixture_report_and_degradation_paths(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = subprocess.run(
-                [sys.executable, str(ROOT / "test_fixture.py")],
+                [sys.executable, str(SRC / "test_fixture.py")],
                 cwd=temp_dir,
                 text=True,
                 capture_output=True,
@@ -357,7 +360,7 @@ class CliIntegrationTests(unittest.TestCase):
             report = subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "aws_audit_report.py"),
+                    str(SRC / "aws_audit_report.py"),
                     "sample.json",
                     "--user",
                     "leaver@example.com",
@@ -399,7 +402,7 @@ class CliIntegrationTests(unittest.TestCase):
             analysis = subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "aws_audit_report.py"),
+                    str(SRC / "aws_audit_report.py"),
                     "sample.json",
                     "--user",
                     "leaver@example.com",

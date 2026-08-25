@@ -106,13 +106,13 @@ Run the review:
 ```bash
 aws sso login --sso-session company
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --notice-date 2026-07-24 \
   --last-day 2026-08-15 \
   --preflight
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --notice-date 2026-07-24 \
   --last-day 2026-08-15 \
@@ -122,11 +122,11 @@ aws sso login --sso-session company
 After collection, attach a current-state snapshot and rebuild the report:
 
 ```bash
-.venv/bin/python aws_current_state.py aws_offboarding_audit.json \
+.venv/bin/python src/aws_current_state.py aws_offboarding_audit.json \
   --sso-session company \
   --out aws_offboarding.state.json
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --input aws_offboarding_audit.json \
   --state aws_offboarding.state.json \

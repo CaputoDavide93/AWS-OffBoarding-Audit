@@ -291,7 +291,7 @@ detector:
 .venv/bin/python -m unittest discover -s tests -v
 
 # Fixture-driven iteration
-python3 test_fixture.py && python3 aws_audit_report.py sample.json \
+python3 src/test_fixture.py && python3 src/aws_audit_report.py sample.json \
   --user leaver@example.com --notice-date 2026-07-24 --last-day 2026-08-15 \
   --org-accounts 111122223333 444455556666 777788889999 222233334444 \
   --out test_report
@@ -313,9 +313,9 @@ database deleted with no final snapshot, `AdministratorAccess` attached.
 Useful smoke checks alongside the automated suite:
 
 ```bash
-python3 -m py_compile audit_intel.py audit_analyst.py aws_audit_report.py aws_offboarding_audit.py
-python3 aws_audit_report.py sample.json --user t --no-enrich --out /tmp/t   # offline degradation
-python3 aws_audit_report.py sample.json --user t --analyze --out /tmp/t     # no API key → warns, continues
+python3 -m py_compile src/audit_intel.py src/audit_analyst.py src/aws_audit_report.py src/aws_offboarding_audit.py
+python3 src/aws_audit_report.py sample.json --user t --no-enrich --out /tmp/t   # offline degradation
+python3 src/aws_audit_report.py sample.json --user t --analyze --out /tmp/t     # no API key → warns, continues
 ```
 
 Both degradation paths must print a warning and still produce a report —

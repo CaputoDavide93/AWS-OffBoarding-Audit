@@ -26,7 +26,7 @@ report's dependencies.
 ## Step 2: Generate a synthetic dataset
 
 ```bash
-python3 test_fixture.py
+python3 src/test_fixture.py
 ```
 
 This writes `sample.json` — 260 fabricated CloudTrail events with fake
@@ -36,7 +36,7 @@ content detector in the codebase. No network calls, no AWS credentials.
 ## Step 3: Build your first dashboard
 
 ```bash
-.venv/bin/python aws_audit_report.py sample.json \
+.venv/bin/python src/aws_audit_report.py sample.json \
   --user leaver@example.com \
   --notice-date 2026-07-24 --last-day 2026-08-15 \
   --org-accounts 111122223333 444455556666 777788889999 222233334444 \
@@ -64,7 +64,7 @@ discover your accounts, then collect and build in one command:
 ```bash
 aws sso login --sso-session <your-session-name>
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --preflight   # discovers accounts, makes no CloudTrail calls
 ```
@@ -73,7 +73,7 @@ Review the account list it prints, then drop `--preflight` and add your
 audit window:
 
 ```bash
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --notice-date 2026-07-24 \
   --last-day 2026-08-15 \

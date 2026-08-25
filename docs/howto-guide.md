@@ -77,7 +77,7 @@ already set in the file.
 ## Preview scope before querying CloudTrail
 
 ```bash
-.venv/bin/python aws_offboarding_dashboard.py --config audit-config.yaml --preflight
+.venv/bin/python src/aws_offboarding_dashboard.py --config audit-config.yaml --preflight
 ```
 
 Writes `<out>.preflight.json` — the account list, role names, and audit
@@ -87,7 +87,7 @@ you have access to the right accounts before spending an hour on collection.
 ## Run a full collection and build the dashboard
 
 ```bash
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --config audit-config.yaml \
   --notice-date 2026-07-24 \
   --last-day 2026-08-15 \
@@ -109,11 +109,11 @@ CloudTrail proves something happened once; it can't prove the change is
 still in place. Run the read-only reconciler after collection:
 
 ```bash
-.venv/bin/python aws_current_state.py aws_offboarding_audit.json \
+.venv/bin/python src/aws_current_state.py aws_offboarding_audit.json \
   --sso-session my-session \
   --out aws_offboarding.state.json
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --input aws_offboarding_audit.json \
   --state aws_offboarding.state.json \
   --out aws_offboarding_report
@@ -131,7 +131,7 @@ Requires at least three comparable audit files (peers, or the same person's
 past reviews):
 
 ```bash
-.venv/bin/python audit_baseline.py peer-a.json peer-b.json peer-c.json \
+.venv/bin/python src/audit_baseline.py peer-a.json peer-b.json peer-c.json \
   --label "Platform engineering peers" \
   --out platform.baseline.json
 ```
@@ -139,7 +139,7 @@ past reviews):
 Then pass it into the report:
 
 ```bash
-.venv/bin/python aws_audit_report.py aws_offboarding_audit.json \
+.venv/bin/python src/aws_audit_report.py aws_offboarding_audit.json \
   --baseline platform.baseline.json \
   --out aws_offboarding_report
 ```
@@ -154,7 +154,7 @@ organization has a CloudTrail Lake event data store, you can go further back
 and optionally include data events:
 
 ```bash
-.venv/bin/python aws_cloudtrail_lake.py \
+.venv/bin/python src/aws_cloudtrail_lake.py \
   --event-data-store 12345678-1234-1234-1234-123456789012 \
   --user leaver@example.com \
   --start 2026-08-01T00:00:00Z \
@@ -171,7 +171,7 @@ Already have a Lake or Athena export as JSON/CSV? Normalize it directly
 instead of querying live:
 
 ```bash
-.venv/bin/python aws_cloudtrail_lake.py --input export.csv --user leaver@example.com \
+.venv/bin/python src/aws_cloudtrail_lake.py --input export.csv --user leaver@example.com \
   --start 2026-08-01T00:00:00Z --end 2026-08-24T00:00:00Z
 ```
 
@@ -180,7 +180,7 @@ instead of querying live:
 ```bash
 export ANTHROPIC_API_KEY="..."
 
-.venv/bin/python aws_offboarding_dashboard.py \
+.venv/bin/python src/aws_offboarding_dashboard.py \
   --input aws_offboarding_audit.json \
   --analyze \
   --redact
@@ -200,7 +200,7 @@ analyst section.
 ## Package evidence for handoff
 
 ```bash
-.venv/bin/python aws_offboarding_audit.py \
+.venv/bin/python src/aws_offboarding_audit.py \
   --config audit-config.yaml \
   --archive \
   --encrypt-recipient age1example
