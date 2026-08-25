@@ -40,7 +40,7 @@ access and destructive changes, and builds a portable HTML dashboard for the sec
   <img src="docs/screenshot.png" alt="AWS Offboarding Audit dashboard showing severity, account, and category filters over a CloudTrail timeline" width="820">
 </p>
 
-<p align="center"><sub>A fully synthetic example is in <a href="docs/example-report.html">docs/example-report.html</a> — download and open it locally, no account IDs are real.</sub></p>
+<p align="center"><sub>A fully synthetic example is in <a href="docs/example-report.html">docs/example-report.html</a>. Download and open it locally; no account IDs in it are real.</sub></p>
 
 The report separates three different facts:
 
@@ -53,9 +53,13 @@ The report separates three different facts:
 Severity is a review priority, not a statement of intent. Confirm every item against change tickets
 and planned work before taking action.
 
+The report opens in plain-English mode: a short explainer for HR or an IT lead, framed by whether
+the person is still employed, on notice, or already departed. A switch at the top reveals the
+underlying API names, timestamps, regions, and raw request parameters for whoever needs them.
+
 ## 🔒 Read-only, by design
 
-Every AWS call this project makes is a `Get*`, `List*`, `Describe*`, or `LookupEvents` call — the
+Every AWS call this project makes is a `Get*`, `List*`, `Describe*`, or `LookupEvents` call: the
 kind you'd use to read state, never to change it. There is no `Create*`, `Put*`, `Delete*`,
 `Update*`, `Terminate*`, `Modify*`, `Attach*`/`Detach*`, or `Revoke*` call anywhere in this
 codebase. Running it cannot alter, disable, or delete anything in your AWS accounts.
@@ -77,6 +81,8 @@ pass to the Anthropic API, and even that sends a bounded findings digest, never 
   account, category, date, and current-state filters
 - 🧭 **Plain-language assessments** that separate likely routine activity, items to watch, and
   evidence that needs prompt investigation without claiming to infer intent
+- 👔 **HR-facing by default**: a non-technical explainer opens first, framed by employment status
+  (employed, on notice, or departed), with a switch to reveal full technical detail on demand
 - 📋 **Evidence-aware readiness checklist** that separates report-backed checks from manual
   identity, credential, session, secret-rotation, and handover controls
 - ✅ **Read-only reconciliation** for IAM users and roles, Lambda URLs, snapshots, buckets, security
@@ -191,7 +197,7 @@ Review the SQL before executing a Lake query:
 ```
 
 Remove `--dry-run` to execute with the active AWS credentials. `start_query`/`get_query_results` is
-a read query against your event data store — still read-only, no write API involved. Existing Lake
+a read query against your event data store, still read-only, no write API involved. Existing Lake
 or Athena JSON/CSV exports can be normalized with `--input <file>`.
 
 ## 🔬 External Analysis
