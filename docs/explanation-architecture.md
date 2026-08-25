@@ -129,9 +129,8 @@ dates against the real clock at report-build time:
 | `notice_period` | a date is supplied, but "now" is still before it | Continued activity is expected — they still have a job to do. Nothing is escalated on timing yet. |
 | `departed` | `--last-day` is supplied and has passed | Post-departure activity has no ordinary work justification and is the one thing worth chasing immediately. |
 
-This status renders as a plain-English section titled "Reading this report
-without a technical background" at the top of both the HTML and Markdown
-report — see `hr_explainer_paragraphs()`. It exists because severity labels
+This status renders in the HTML report's optional "How to read" page and as
+a plain-English section in Markdown — see `hr_explainer_paragraphs()`. It exists because severity labels
 alone read as verdicts to someone who doesn't know what an API call is;
 this section is the difference between "critical" meaning "call security"
 and meaning "worth one Slack message to check."
@@ -193,6 +192,23 @@ expose a normalized target, the targets must match for the correlation to
 be labelled "strong"; missing target information can still produce a
 "moderate" correlation, but it must never be presented as parameter-level
 proof.
+
+## Review priority and AI interpretation
+
+`review_priority()` produces the 1-10 **Current review priority** shown on
+Summary. It is deterministic and local: points come from post-departure
+activity, critical/high request-parameter findings, bounded sequences,
+risky changes that remain active, repeated denied attempts, peer-baseline
+deviation, incomplete coverage, and loose identity matching. Each point
+source is printed beside the score. The number ranks the evidence queue;
+it is not a probability, an intent classifier, or a rating of the person.
+
+The optional analyst receives richer context for each sequence: principal,
+account, normalized target, confidence, and timestamps. Its schema requires
+two competing hypotheses — a plausible routine explanation and a concerning
+explanation — plus the concrete evidence that would distinguish them. This
+is the useful boundary of AI here: it can organize context and propose what
+to verify, but CloudTrail cannot reveal a person's actual purpose.
 
 ## Constraints and limitations
 

@@ -13,7 +13,7 @@ so you never manually pass audit JSON between the two.
 | Flag | Type | Default | Meaning |
 | --- | --- | --- | --- |
 | `--input` | path | — | Existing collector/Lake JSON; skips collection entirely |
-| `--config` | path | — | YAML file of collector defaults (see [audit-config.example.yaml](../audit-config.example.yaml)) |
+| `--config` | path | — | YAML file with `collector:` and `report:` defaults (see [audit-config.example.yaml](../audit-config.example.yaml)); CLI flags override it |
 | `--user` | str | — | Departing engineer identifier (email, IAM username, or principal fragment) |
 | `--sso-session` | str | — | `sso-session` name from `~/.aws/config` |
 | `--start-url` | str | — | SSO start URL, alternative to `--sso-session` |
@@ -33,6 +33,8 @@ so you never manually pass audit JSON between the two.
 | `--last-day` | `YYYY-MM-DD` | — | Last working day; later activity escalates to critical |
 | `--org-accounts` | str list | `[]` | Known org account IDs, used to flag references to accounts outside this list |
 | `--timezone` | str | `Europe/London` | Display timezone for timing checks |
+| `--work-start` | int | 8 | Start of expected business hours (24h) |
+| `--work-end` | int | 19 | End of expected business hours (24h) |
 | `--state` | path | — | Current-state snapshot from `aws_current_state.py` |
 | `--baseline` | path | — | Peer baseline from `audit_baseline.py` |
 | `--sequence-hours` | int | 24 | Max gap between events for sequence correlation |

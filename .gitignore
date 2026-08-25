@@ -27,6 +27,8 @@ aws_offboarding_audit.txt
 aws_offboarding_audit.manifest.json
 aws_offboarding_audit.summary.json
 aws_offboarding_audit.checkpoint.json
+aws_offboarding_audit.preflight.json
+*.preflight.json
 aws_offboarding_report.html
 aws_offboarding_report.md
 aws_offboarding_report.summary.json

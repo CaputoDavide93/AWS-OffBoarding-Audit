@@ -54,10 +54,21 @@ collector:
   region_concurrency: 3
   request_params_limit: 32768
   out: aws_offboarding_audit
+
+report:
+  timezone: Europe/London
+  work_start: 8
+  work_end: 19
+  org_accounts:
+    - "111122223333"
+    - "444455556666"
+  sequence_hours: 24
 ```
 
 `audit-config.yaml` is gitignored — it's expected to hold real account IDs
-and identities you don't want in source control.
+and identities you don't want in source control. `collector:` values configure
+AWS collection; `report:` values configure interpretation and display. CLI
+flags take precedence, so person-specific dates can remain in the command.
 
 **Verification:** `aws_offboarding_dashboard.py --config audit-config.yaml
 --preflight` should list your accounts without asking for any flag you
@@ -208,3 +219,10 @@ share anything.
 
 CI runs the same two commands, plus Gitleaks, on every push and pull request
 to `main`.
+
+## Run the complete offboarding process
+
+The audit report does not disable identities or credentials. Use the
+[AWS offboarding playbook](offboarding-playbook.md) to assign owners, remove
+access, revoke sessions, rotate shared secrets, transfer workloads, review
+post-departure evidence, and record the closure decision.

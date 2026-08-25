@@ -22,6 +22,7 @@ from aws_audit_report import (
 )
 from aws_cloudtrail_lake import build_query, normalize_lake_row
 from aws_current_state import reconcile_event
+from aws_offboarding_dashboard import parse_args as parse_dashboard_args
 from aws_offboarding_audit import (
     CheckpointStore,
     _serialise_request_params,
@@ -163,6 +164,25 @@ class IntelligenceTests(unittest.TestCase):
 
 
 class DashboardTests(unittest.TestCase):
+    def test_report_yaml_defaults_are_overridden_by_cli(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config = Path(temp_dir, "config.yaml")
+            config.write_text(
+                "collector:\n  user: leaver@example.com\n"
+                "report:\n  timezone: UTC\n  work_start: 7\n  work_end: 17\n"
+                "  org_accounts:\n    - '111122223333'\n  sequence_hours: 12\n",
+                encoding="utf-8",
+            )
+            args = parse_dashboard_args([
+                "--config", str(config), "--timezone", "Europe/Rome"
+            ])
+
+        self.assertEqual(args.timezone, "Europe/Rome")
+        self.assertEqual(args.work_start, 7)
+        self.assertEqual(args.work_end, 17)
+        self.assertEqual(args.org_accounts, ["111122223333"])
+        self.assertEqual(args.sequence_hours, 12)
+
     def test_state_baseline_and_dashboard_payload(self):
         rows = enrich(
             [event("CreateUser", "2026-08-01T10:00:00+00:00", "backdoor")],
@@ -201,6 +221,24 @@ class DashboardTests(unittest.TestCase):
 
 
 class AnalystTests(unittest.TestCase):
+    def test_analysis_schema_preserves_pattern_hypotheses(self):
+        value = {
+            "headline": "Review", "assessment": "Limited evidence", "confidence": "medium",
+            "confidence_note": "Management events only", "priority_actions": [],
+            "event_notes": [], "blind_spots": [], "questions_for_the_team": [],
+            "pattern_notes": [{
+                "pattern": "IAM user created and given long-lived keys",
+                "routine_explanation": "A service migration was approved.",
+                "concerning_explanation": "The keys create access outside SSO.",
+                "deciding_evidence": "Confirm the owner, ticket, and current key state.",
+            }],
+        }
+
+        result = validate_analysis(value)
+
+        self.assertEqual(len(result["pattern_notes"]), 1)
+        self.assertIn("outside SSO", result["pattern_notes"][0]["concerning_explanation"])
+
     def test_analysis_schema_rejects_invalid_urgency(self):
         value = {
             "headline": "Review", "assessment": "Limited evidence", "confidence": "medium",

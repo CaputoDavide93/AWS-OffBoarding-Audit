@@ -212,6 +212,22 @@ code,.mono,.evt{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,mo
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px 96px}
 a{color:var(--medium)}
 
+.page-nav{position:sticky;top:0;z-index:30;display:flex;align-items:center;
+    justify-content:space-between;gap:24px;min-height:54px;background:rgba(238,241,244,.96);
+    border-bottom:1px solid var(--rule);backdrop-filter:blur(8px)}
+.page-nav-brand{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.page-links{display:flex;align-self:stretch;gap:24px}
+.page-links a{display:flex;align-items:center;border-bottom:3px solid transparent;
+    color:var(--muted);font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap}
+.page-links a:hover,.page-links a:focus{color:var(--ink)}
+.page-links a[aria-current="page"]{border-bottom-color:var(--ink);color:var(--ink)}
+.report-page[hidden]{display:none}
+.page-intro{padding:48px 0 22px;border-bottom:2px solid var(--ink)}
+.page-intro h1{font-size:32px;margin-bottom:12px}
+.page-intro p{max-width:720px;margin:0;color:var(--muted);font-size:14.5px}
+.guide-page{max-width:780px;margin:0 auto}
+
 header.case{border-bottom:2px solid var(--ink);padding:56px 0 24px}
 .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--muted)}
@@ -326,6 +342,44 @@ h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;
 .f-body{padding:16px 20px}
 .f-body p{margin:0 0 12px}
 .lead{font-size:14.5px}
+.assessment{display:grid;grid-template-columns:minmax(118px,auto) 1fr;gap:12px;
+    align-items:start;margin:0 0 14px;padding:12px 14px;border:1px solid var(--rule-soft);
+    background:var(--wash);font-size:13.5px}
+.assessment strong{font-size:12px;letter-spacing:.04em}
+.assessment.investigate{border-left:4px solid var(--critical);background:#FBEEEA}
+.assessment.investigate strong{color:var(--critical)}
+.assessment.watch{border-left:4px solid var(--high);background:#FBF3E8}
+.assessment.watch strong{color:var(--high)}
+.assessment.routine{border-left:4px solid var(--good);background:#EDF7F1}
+.assessment.routine strong{color:var(--good)}
+.readiness{margin:28px 0;border-top:2px solid var(--ink)}
+.readiness-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+.readiness-item{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.readiness-item h3{font-size:14px;margin:5px 0 4px}
+.readiness-item p{font-size:13.5px;margin:0;color:var(--muted)}
+.readiness-status{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase}
+.readiness-status.ready{color:var(--good)}
+.readiness-status.attention{color:var(--critical)}
+.readiness-status.manual{color:var(--high)}
+.review-priority{display:grid;grid-template-columns:220px 1fr;margin:28px 0 8px;
+    background:var(--card);border:1px solid var(--rule);border-top:3px solid var(--medium)}
+.review-priority.high,.review-priority.immediate{border-top-color:var(--critical)}
+.review-priority.elevated{border-top-color:var(--high)}
+.priority-index{padding:22px 24px;border-right:1px solid var(--rule-soft)}
+.priority-kicker{display:block;font:500 10px "IBM Plex Mono",monospace;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted)}
+.priority-number{font:600 52px/1 "IBM Plex Mono",monospace;margin:10px 0 8px}
+.priority-number span{font-size:17px;color:var(--muted)}
+.priority-label{display:block;font-size:14px;color:var(--ink)}
+.priority-reasons{padding:20px 24px}
+.priority-reasons h2{margin:0 0 10px;padding:0;border:0;color:var(--ink);font-size:11px}
+.priority-reasons ul{margin:0;padding-left:20px;font-size:13.5px}
+.priority-reasons li{margin-bottom:5px}
+.identity-read{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule-soft);
+    color:var(--muted);font-size:12.5px}
+.priority-note{margin:10px 0 0;color:var(--muted);font-size:11.5px}
+.priority-link{display:inline-block;margin-top:10px;font-size:12.5px;font-weight:500}
 .f-label{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
 .verify{background:var(--wash);border:1px solid var(--rule-soft);padding:12px 14px;font-size:13.5px}
@@ -405,7 +459,14 @@ button:hover{filter:brightness(.95)}
 footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);font-size:12px;
   color:var(--muted);font-family:"IBM Plex Mono",monospace;line-height:1.8}
 @media(max-width:720px){
+    .page-nav{margin:0 -24px;padding:0 24px}.page-nav-brand{display:none}
+    .page-links{width:100%;justify-content:space-between;gap:12px}
+    .page-links a{font-size:12px}
     h1{font-size:31px}h1 .subject{font-size:17px}
+    .page-intro h1{font-size:27px}
+        .review-priority{grid-template-columns:1fr}.priority-index{border-right:0;
+            border-bottom:1px solid var(--rule-soft)}
+    .readiness-list{grid-template-columns:1fr}
     .coverage-grid{grid-template-columns:1fr 1fr}.coverage-grid>div:nth-child(2){border-right:0}
     .control-grid{grid-template-columns:1fr 1fr}.control-grid .search{grid-column:1/-1}
     .controls{position:static}.result-count{width:100%;margin-left:0}
@@ -415,7 +476,11 @@ footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);font-si
   .tick{padding-left:26px}.tick .dot{left:1px;top:9px}.boundary:before{left:0}
   .analyst{padding:22px 20px}
 }
-@media print{body{background:#fff}.finding,.pattern,.queue li{break-inside:avoid}}
+@media print{
+    body{background:#fff}.page-nav,.view-switch,.jump,.controls{display:none!important}
+    .report-page[hidden]{display:block!important}.report-page{break-before:page}
+    .report-page:first-of-type{break-before:auto}.finding,.pattern,.queue li{break-inside:avoid}
+}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 """
 
@@ -510,6 +575,47 @@ VIEW_TOGGLE_JS = r"""
 })();
 """
 
+PAGE_NAV_JS = r"""
+(() => {
+    const pages = Array.from(document.querySelectorAll('[data-report-page]'));
+    const links = Array.from(document.querySelectorAll('[data-page-link]'));
+    if (!pages.length || !links.length) return;
+
+    const showPage = (name, scroll = false) => {
+        const selected = pages.find(page => page.dataset.reportPage === name) || pages[0];
+        pages.forEach(page => { page.hidden = page !== selected; });
+        links.forEach(link => {
+            if (link.dataset.pageLink === selected.dataset.reportPage) {
+                link.setAttribute('aria-current', 'page');
+            } else {
+                link.removeAttribute('aria-current');
+            }
+        });
+        if (scroll) selected.scrollIntoView({block: 'start'});
+    };
+
+    const pageFromHash = () => {
+        const id = decodeURIComponent(location.hash.slice(1));
+        const target = id ? document.getElementById(id) : null;
+        return target?.closest('[data-report-page]')?.dataset.reportPage || 'summary';
+    };
+
+    const route = () => {
+        const id = decodeURIComponent(location.hash.slice(1));
+        const target = id ? document.getElementById(id) : null;
+        showPage(pageFromHash());
+        if (target) requestAnimationFrame(() => target.scrollIntoView({block: 'start'}));
+    };
+
+    links.forEach(link => link.addEventListener('click', event => {
+        showPage(link.dataset.pageLink, location.hash === link.getAttribute('href'));
+        if (location.hash === link.getAttribute('href')) event.preventDefault();
+    }));
+    window.addEventListener('hashchange', route);
+    route();
+})();
+"""
+
 
 def esc(v) -> str:
     return html.escape(str(v if v is not None else ""))
@@ -598,6 +704,277 @@ def group_events(rows):
                 SEV_ORDER[evts[0]["base_severity"]],
                 -len(evts), kv[0])
     return sorted(by_event.items(), key=rank)
+
+
+def assess_action(events: list[dict]) -> dict[str, str]:
+    """Turn report evidence into a cautious, plain-language review priority."""
+    content_findings = [
+        finding
+        for event in events
+        for finding in event.get("content_findings", [])
+    ]
+    after_departure = sum(
+        "After last working day" in event.get("flags", []) for event in events
+    )
+    serious_findings = [
+        finding for finding in content_findings if finding.get("severity") in {C, H}
+    ]
+
+    if after_departure:
+        return {
+            "level": "investigate",
+            "label": "Investigate now",
+            "summary": (
+                f"{after_departure} event(s) occurred after the last working day. This may be a "
+                "scheduled job or shared credential, but access should already have been removed. "
+                "Confirm the source and owner today."
+            ),
+        }
+    if serious_findings:
+        return {
+            "level": "investigate",
+            "label": "Investigate now",
+            "summary": (
+                f"The request details show a concrete high-impact condition: "
+                f"{serious_findings[0]['title']}. Check the approval and current AWS state; this "
+                "is evidence of risk, not proof of intent."
+            ),
+        }
+
+    first = events[0]
+    failed = sum(bool(event.get("error_code")) for event in events)
+    above_baseline = any(event.get("baseline_status") == "above" for event in events)
+    if content_findings:
+        reason = f"The request details triggered a specific check: {content_findings[0]['title']}."
+    elif first["base_severity"] in {C, H}:
+        reason = "This kind of action can create lasting access, exposure, or data loss."
+    elif failed:
+        reason = f"{failed} attempt(s) failed or were denied; repeated attempts can indicate probing."
+    elif above_baseline:
+        reason = "This action occurred more often than in the supplied peer baseline."
+    elif first["base_severity"] == M:
+        reason = "This change is not harmful by itself, but its business reason should be recorded."
+    else:
+        return {
+            "level": "routine",
+            "label": "Likely routine",
+            "summary": (
+                "No direct warning sign appears in the available request details or timing. "
+                "Keep it as audit evidence; no special response is suggested unless it conflicts "
+                "with the person's role or a change record."
+            ),
+        }
+    return {
+        "level": "watch",
+        "label": "Keep an eye on",
+        "summary": f"{reason} Confirm it matches normal duties, a ticket, or the handover plan.",
+    }
+
+
+def review_priority(rows: list[dict], sequences: list[dict], ctx: dict) -> dict[str, object]:
+    """Rank the supplied evidence for human review without scoring the person or intent."""
+    score = 1
+    reasons: list[str] = []
+
+    def add(points: int, reason: str) -> None:
+        nonlocal score
+        score += points
+        reasons.append(reason)
+
+    def is_read_event(row: dict) -> bool:
+        return str(row.get("event_name", "")).startswith(
+            ("Get", "List", "Describe", "Head", "Search", "Lookup")
+        )
+
+    after_departure = [
+        row for row in rows if "After last working day" in row.get("flags", [])
+    ]
+    if after_departure:
+        changes = sum(not is_read_event(row) for row in after_departure)
+        points = 3 if changes else 2
+        detail = f", including {changes} change action(s)" if changes else ""
+        add(points, f"{len(after_departure)} event(s) occurred after the last working day{detail}.")
+    elif not ctx.get("last_day"):
+        add(1, "No last working day was supplied, so post-departure activity cannot be evaluated.")
+
+    parameter_findings = [
+        finding
+        for row in rows
+        for finding in row.get("content_findings", [])
+        if finding.get("severity") in {C, H}
+    ]
+    critical_findings = [finding for finding in parameter_findings if finding.get("severity") == C]
+    if critical_findings:
+        add(3, f"{len(critical_findings)} critical condition(s) were found in request parameters.")
+    elif parameter_findings:
+        add(2, f"{len(parameter_findings)} high-impact condition(s) were found in request parameters.")
+
+    strong_sequences = [item for item in sequences if item.get("confidence") == "strong"]
+    if strong_sequences:
+        add(2, f"{len(strong_sequences)} same-principal, same-target activity pattern(s) were detected.")
+    elif sequences:
+        add(1, f"{len(sequences)} contextual activity pattern(s) were detected.")
+
+    active_risky = [
+        row for row in rows
+        if row.get("current_state") in {"active", "present"}
+        and (row.get("base_severity") in {C, H} or any(
+            finding.get("severity") in {C, H} for finding in row.get("content_findings", [])
+        ))
+    ]
+    if active_risky:
+        add(1, f"{len(active_risky)} high-impact change(s) still appear active or present.")
+
+    failed_after_departure = sum(bool(row.get("error_code")) for row in after_departure)
+    if failed_after_departure >= 2:
+        add(1, f"{failed_after_departure} post-departure attempts failed or were denied.")
+
+    if any(row.get("baseline_status") == "above" for row in rows):
+        add(1, "At least one action occurred above the supplied peer baseline.")
+
+    coverage_status = str(ctx.get("coverage", {}).get("status", "unknown")).lower()
+    if coverage_status != "complete":
+        add(1, f"Collection coverage is {coverage_status}; unseen activity remains possible.")
+
+    match_modes = Counter(
+        str(row.get("match_mode", "")).lower() for row in rows if row.get("match_mode")
+    )
+    if match_modes.get("loose"):
+        add(1, f"{match_modes['loose']} event(s) rely on loose identity matching.")
+        identity = {
+            "label": "Includes loose matches",
+            "detail": "Confirm those events belong to the subject before using them for a decision.",
+        }
+    elif match_modes.get("exact"):
+        identity = {
+            "label": "Exact identity fields",
+            "detail": f"{match_modes['exact']} event(s) matched explicit CloudTrail identity values.",
+        }
+    else:
+        principals = {
+            str(row.get("principal_key") or row.get("principal_arn") or row.get("principal_id"))
+            for row in rows
+            if row.get("principal_key") or row.get("principal_arn") or row.get("principal_id")
+        }
+        identity = {
+            "label": "Match confidence not recorded",
+            "detail": (
+                f"The source contains {len(principals)} recorded principal(s), but it predates or "
+                "omits exact-versus-loose match metadata."
+            ),
+        }
+
+    score = min(10, score)
+    if score <= 2:
+        label, level = "Routine review", "routine"
+    elif score <= 4:
+        label, level = "Focused review", "focused"
+    elif score <= 6:
+        label, level = "Elevated review", "elevated"
+    elif score <= 8:
+        label, level = "High priority", "high"
+    else:
+        label, level = "Immediate review", "immediate"
+
+    if not reasons:
+        reasons.append(
+            "No post-departure activity, high-impact parameter evidence, or correlated patterns "
+            "were found in the supplied data."
+        )
+    return {
+        "score": score,
+        "label": label,
+        "level": level,
+        "reasons": reasons,
+        "identity": identity,
+    }
+
+
+def offboarding_readiness(rows: list[dict], ctx: dict) -> list[dict[str, str]]:
+    """Separate evidence this report can verify from controls people must perform."""
+    coverage = ctx.get("coverage", {})
+    coverage_status = str(coverage.get("status", "unknown")).lower()
+    last_day = ctx.get("last_day")
+    after_departure = sum(
+        "After last working day" in row.get("flags", []) for row in rows
+    )
+    state_available = bool(ctx.get("state_metadata", {}).get("available"))
+
+    items = [{
+        "status": "ready" if last_day else "attention",
+        "label": "Evidence ready" if last_day else "Needs attention",
+        "title": "Set the departure boundary",
+        "detail": (
+            f"The last working day is {last_day}; later activity is escalated automatically."
+            if last_day else
+            "No last working day was supplied, so the report cannot identify activity after departure."
+        ),
+    }, {
+        "status": "ready" if coverage_status == "complete" else "attention",
+        "label": "Evidence ready" if coverage_status == "complete" else "Needs attention",
+        "title": "Confirm audit coverage",
+        "detail": (
+            "Every requested account and region was collected successfully."
+            if coverage_status == "complete" else
+            f"Collection coverage is {coverage_status}; resolve denials or blind spots before clearing the review."
+        ),
+    }]
+
+    if not last_day:
+        post_departure = {
+            "status": "attention", "label": "Needs attention",
+            "title": "Review activity after departure",
+            "detail": "Supply the last working day before this check can be evaluated.",
+        }
+    elif after_departure:
+        post_departure = {
+            "status": "attention", "label": "Needs attention",
+            "title": "Review activity after departure",
+            "detail": (
+                f"{after_departure} event(s) occurred after the last working day. "
+                "Identify the session, credential, automation, or owner and record the outcome."
+            ),
+        }
+    else:
+        post_departure = {
+            "status": "ready", "label": "Evidence ready",
+            "title": "Review activity after departure",
+            "detail": "No post-departure activity appears in the collected evidence.",
+        }
+    items.append(post_departure)
+
+    items.extend([{
+        "status": "ready" if state_available else "attention",
+        "label": "Evidence ready" if state_available else "Needs attention",
+        "title": "Check whether risky changes still exist",
+        "detail": (
+            "A current-state snapshot is attached; review active, present, and unknown results."
+            if state_available else
+            "No current-state snapshot is attached. Historical events do not prove that access was removed."
+        ),
+    }, {
+        "status": "manual", "label": "Manual control",
+        "title": "Disable identity access and revoke sessions",
+        "detail": (
+            "Disable the person in the authoritative identity provider, remove AWS assignments, "
+            "and revoke active IAM Identity Center sessions. CloudTrail review cannot perform this."
+        ),
+    }, {
+        "status": "manual", "label": "Manual control",
+        "title": "Remove standalone AWS credentials",
+        "detail": (
+            "Review IAM users for console passwords, access keys, MFA devices, signing certificates, "
+            "SSH keys, and service-specific credentials; deactivate first when rollback may be needed."
+        ),
+    }, {
+        "status": "manual", "label": "Manual control",
+        "title": "Transfer ownership and rotate shared secrets",
+        "detail": (
+            "Reassign owned resources, automation, alerts, break-glass duties, and billing contacts. "
+            "Rotate any team secrets the person knew and preserve the handover record."
+        ),
+    }])
+    return items
 
 
 def employment_status(ctx) -> str:
@@ -717,6 +1094,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
         "coverage": coverage,
         "events": [dashboard_event(row) for row in rows],
     }
+    priority = review_priority(rows, sequences, ctx)
 
     p = ["<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'>",
          "<meta name='viewport' content='width=device-width,initial-scale=1'>",
@@ -726,6 +1104,15 @@ def render_html(rows, sequences, analysis, ctx) -> str:
          "<link href='https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600"
          "&family=IBM+Plex+Sans:wght@400;500;600&display=swap' rel='stylesheet'>",
          f"<style>{CSS}</style></head><body><div class='wrap'>"]
+
+    p.append("<nav class='page-nav' aria-label='Report pages'>"
+             "<span class='page-nav-brand'>AWS offboarding review</span>"
+             "<div class='page-links'>"
+             "<a href='#page-summary' data-page-link='summary' aria-current='page'>Summary</a>"
+             "<a href='#page-actions' data-page-link='actions'>Actions &amp; evidence</a>"
+             "<a href='#page-guide' data-page-link='guide'>How to read</a>"
+             "</div></nav><main>"
+             "<section class='report-page' id='page-summary' data-report-page='summary'>")
 
     p.append("<header class='case' id='overview'><div class='eyebrow'>AWS offboarding control room</div>")
     p.append(f"<h1>Access and activity review<span class='subject'>{esc(ctx['user'])}</span></h1>")
@@ -747,52 +1134,38 @@ def render_html(rows, sequences, analysis, ctx) -> str:
              "an engineer's history are their job. Confirm each item against change tickets and "
              "planned work before drawing any conclusion.</p></header>")
 
-    p.append("<section class='hr-guide' id='hr-guide'>"
-             "<h2>Reading this report without a technical background</h2>")
-    for para in hr_explainer_paragraphs(ctx):
-        p.append(f"<p>{para}</p>")
-    p.append("</section>")
+    identity = priority["identity"]
+    p.append(f"<section class='review-priority {esc(priority['level'])}' "
+             "aria-labelledby='priority-title'><div class='priority-index'>"
+             "<span class='priority-kicker' id='priority-title'>Current review priority</span>"
+             f"<div class='priority-number'>{esc(priority['score'])}<span>/10</span></div>"
+             f"<strong class='priority-label'>{esc(priority['label'])}</strong></div>"
+             "<div class='priority-reasons'><h2>Why this score</h2><ul>"
+             + "".join(f"<li>{esc(reason)}</li>" for reason in priority["reasons"])
+             + "</ul>"
+             f"<p class='identity-read'><strong>Identity attribution: {esc(identity['label'])}.</strong> "
+             f"{esc(identity['detail'])}</p>"
+             "<p class='priority-note'>This score ranks the evidence for human review. It is not a "
+             "probability of wrongdoing, a judgement of intent, or a rating of the person.</p>"
+             + (f"<a class='priority-link' href='#patterns'>Review {len(sequences)} detected "
+                f"pattern(s)</a>" if sequences else "")
+             + "</div></section>")
 
-    p.append(
-        "<div class='view-switch'>"
-        "<label class='switch'><input type='checkbox' id='tech-toggle' "
-        "aria-describedby='view-mode-hint'><span class='slider'></span></label>"
-        "<span class='vs-label'>Showing:</span> "
-        "<span class='vs-mode' id='view-mode-label'>Plain-English summary</span>"
-        "<span class='vs-label' id='view-mode-hint'>— switch on for API names, "
-        "timestamps, regions, and raw request data</span>"
-        "</div>")
-
-    p.append("<nav class='jump tech' aria-label='Dashboard sections'>"
-             "<a href='#overview'>Overview</a><a href='#hr-guide'>Read this first</a>"
-             "<a href='#coverage'>Coverage</a>"
-             "<a href='#timeline'>Timeline</a><a href='#findings'>Findings</a>"
-             "<a href='#activity'>Activity</a></nav>")
-    p.append(render_filter_controls(groups, account_options, categories, states))
+    p.append("<section class='readiness' id='readiness'><h2>Offboarding readiness</h2>"
+             "<p class='dim'>Evidence ready means this report can support the check. "
+             "Manual controls still need an owner and completion record.</p>"
+             "<div class='readiness-list'>")
+    for item in offboarding_readiness(rows, ctx):
+        p.append(f"<article class='readiness-item'><span class='readiness-status "
+                 f"{esc(item['status'])}'>{esc(item['label'])}</span>"
+                 f"<h3>{esc(item['title'])}</h3><p>{esc(item['detail'])}</p></article>")
+    p.append("</div></section>")
 
     p.append("<div class='tally'>")
     for sev in (C, H, M, L):
         p.append(f"<div class='{sev}'><div class='n'>{counts.get(sev,0)}</div>"
                  f"<div class='k'>{SEV_LABEL[sev]}</div></div>")
     p.append(f"<div><div class='n'>{ctx['n_accounts']}</div><div class='k'>Accounts</div></div></div>")
-
-    requested_units = coverage.get("requested_units", "unknown")
-    successful_units = coverage.get("successful_units", "unknown")
-    failed_units = coverage.get("failed_units", "unknown")
-    truncated = coverage.get("request_params_truncated", 0)
-    p.append(f"<section class='coverage tech {coverage_class}' id='coverage'>"
-             "<div class='coverage-head'><div><h2>Collection coverage</h2>"
-             "<div class='dim'>Completeness is evidence. Missing access is not zero activity.</div></div>"
-             f"<span class='status {coverage_class}'>{esc(coverage_status)}</span></div>")
-    p.append("<div class='coverage-grid'>"
-             f"<div><strong>{esc(successful_units)}</strong><span>Successful units</span></div>"
-             f"<div><strong>{esc(failed_units)}</strong><span>Failed or denied units</span></div>"
-             f"<div><strong>{esc(requested_units)}</strong><span>Account-region units</span></div>"
-             f"<div><strong>{esc(truncated)}</strong><span>Truncated parameter fields</span></div></div>")
-    limitations = coverage.get("limitations") or []
-    if limitations:
-        p.append("<p class='coverage-note'>" + " ".join(esc(item) for item in limitations) + "</p>")
-    p.append("</section>")
 
     if analysis:
         meta = analysis.get("_meta", {})
@@ -809,6 +1182,18 @@ def render_html(rows, sequences, analysis, ctx) -> str:
             p.append(f"<div class='conf'><strong>Confidence: {esc(analysis['confidence'])}.</strong> "
                      f"{esc(analysis.get('confidence_note',''))}</div>")
         p.append("</div>")
+
+        pattern_notes = analysis.get("pattern_notes") or []
+        if pattern_notes:
+            p.append("<h2>AI-assisted pattern interpretation</h2>")
+            for note in pattern_notes:
+                p.append(f"<div class='pattern'><h3>{esc(note.get('pattern',''))}</h3>"
+                         f"<p><span class='f-label'>Plausible routine explanation</span>"
+                         f"{esc(note.get('routine_explanation',''))}</p>"
+                         f"<p><span class='f-label'>Concerning hypothesis</span>"
+                         f"{esc(note.get('concerning_explanation',''))}</p>"
+                         f"<p><span class='f-label'>What would decide</span>"
+                         f"{esc(note.get('deciding_evidence',''))}</p></div>")
 
         actions = analysis.get("priority_actions") or []
         if actions:
@@ -831,14 +1216,56 @@ def render_html(rows, sequences, analysis, ctx) -> str:
                 p.append("<div class='pattern'><h3>Questions for the team</h3><ul>"
                          + "".join(f"<li>{esc(q)}</li>" for q in qs) + "</ul></div>")
 
+    p.append("</section>"
+             "<section class='report-page' id='page-actions' data-report-page='actions' hidden>"
+             "<header class='page-intro'><div class='eyebrow'>Review detail</div>"
+             "<h1>Actions and evidence</h1>"
+             "<p>Review what happened, why each action matters, and the evidence needed to "
+             "clear or escalate it.</p></header>")
+    p.append(
+        "<div class='view-switch'>"
+        "<label class='switch'><input type='checkbox' id='tech-toggle' "
+        "aria-describedby='view-mode-hint'><span class='slider'></span></label>"
+        "<span class='vs-label'>Showing:</span> "
+        "<span class='vs-mode' id='view-mode-label'>Plain-English summary</span>"
+        "<span class='vs-label' id='view-mode-hint'>— switch on for API names, "
+        "timestamps, regions, and raw request data</span>"
+        "</div>")
+    pattern_link = "<a href='#patterns'>Patterns</a>" if sequences else ""
+    p.append("<nav class='jump tech' aria-label='Evidence sections'>"
+             "<a href='#coverage'>Coverage</a>" + pattern_link + "<a href='#timeline'>Timeline</a>"
+             "<a href='#findings'>Findings</a><a href='#activity'>Activity</a></nav>")
+    p.append(render_filter_controls(groups, account_options, categories, states))
+
+    requested_units = coverage.get("requested_units", "unknown")
+    successful_units = coverage.get("successful_units", "unknown")
+    failed_units = coverage.get("failed_units", "unknown")
+    truncated = coverage.get("request_params_truncated", 0)
+    p.append(f"<section class='coverage tech {coverage_class}' id='coverage'>"
+             "<div class='coverage-head'><div><h2>Collection coverage</h2>"
+             "<div class='dim'>Completeness is evidence. Missing access is not zero activity.</div></div>"
+             f"<span class='status {coverage_class}'>{esc(coverage_status)}</span></div>")
+    p.append("<div class='coverage-grid'>"
+             f"<div><strong>{esc(successful_units)}</strong><span>Successful units</span></div>"
+             f"<div><strong>{esc(failed_units)}</strong><span>Failed or denied units</span></div>"
+             f"<div><strong>{esc(requested_units)}</strong><span>Account-region units</span></div>"
+             f"<div><strong>{esc(truncated)}</strong><span>Truncated parameter fields</span></div></div>")
+    limitations = coverage.get("limitations") or []
+    if limitations:
+        p.append("<p class='coverage-note'>" + " ".join(esc(item) for item in limitations) + "</p>")
+    p.append("</section>")
+
     if sequences:
-        p.append("<div class='tech'><h2>Sequences worth attention</h2>")
+        p.append("<div id='patterns'><h2>Detected activity patterns</h2>"
+                 "<p class='dim'>These ordered actions share a principal, account, time window, "
+                 "and, when available, a target. They suggest what to investigate, not why the "
+                 "person acted.</p>")
         for s in sequences:
             p.append(f"<div class='pattern'><h3>{esc(s['title'])}</h3><p>{esc(s['body'])}</p>"
                      "<div class='chips'>"
                      f"<span class='chip'>Correlation: {esc(s.get('confidence','context'))}</span>"
-                     f"<span class='chip'>{esc(s.get('target_key') or 'multiple targets')}</span>"
-                     + "".join(f"<span class='chip'>{esc(e)}</span>" for e in s["events"][:8])
+                     f"<span class='chip tech'>{esc(s.get('target_key') or 'multiple targets')}</span>"
+                     + "".join(f"<span class='chip tech'>{esc(e)}</span>" for e in s["events"][:8])
                      + "</div></div>")
         p.append("</div>")
 
@@ -910,6 +1337,7 @@ def render_html(rows, sequences, analysis, ctx) -> str:
     for name, evts in groups:
         f = evts[0]
         sev = f["severity"]
+        assessment = assess_action(evts)
         group_accounts = ",".join(sorted({str(event.get("account_id", "")) for event in evts}))
         group_states = ",".join(sorted({str(event.get("current_state", "unknown")) for event in evts}))
         group_dates = sorted(event["_local"].strftime("%Y-%m-%d") for event in evts)
@@ -922,6 +1350,10 @@ def render_html(rows, sequences, analysis, ctx) -> str:
         p.append(f"<span class='f-name'>{esc(name)}</span>")
         p.append(f"<span class='f-cat'>{esc(f['category'])}</span>")
         p.append(f"<span class='f-count'>{len(evts)}×</span></div><div class='f-body'>")
+
+        p.append(f"<div class='assessment {esc(assessment['level'])}'>"
+             f"<strong>{esc(assessment['label'])}</strong>"
+             f"<span>{esc(assessment['summary'])}</span></div>")
 
         seen, hits = set(), []
         for e in evts:
@@ -1004,6 +1436,17 @@ def render_html(rows, sequences, analysis, ctx) -> str:
                  f"<td class='mono'>{c or ''}</td><td class='mono'>{h or ''}</td></tr>")
     p.append("</table>")
 
+    p.append("</section>"
+             "<section class='report-page guide-page' id='page-guide' "
+             "data-report-page='guide' hidden>"
+             "<header class='page-intro'><div class='eyebrow'>Optional guide</div>"
+             "<h1>Reading this report without a technical background</h1>"
+             "<p>A short guide to severity, suspicious signals, and the limits of automated "
+             "judgement.</p></header><section class='hr-guide'>")
+    for para in hr_explainer_paragraphs(ctx):
+        p.append(f"<p>{para}</p>")
+    p.append("</section></section></main>")
+
     p.append(f"<footer>Report {esc(ctx.get('report_id',''))} · Generated {esc(ctx['generated'])} "
              f"· Times in {esc(ctx['tzname'])}<br>"
              f"Source scope: {esc(coverage.get('event_scope','management'))}. Data events are "
@@ -1015,7 +1458,8 @@ def render_html(rows, sequences, analysis, ctx) -> str:
              "Red Team.</footer>"
              f"<script type='application/json' id='report-data'>{json_for_html(payload)}</script>"
              f"<script>{DASHBOARD_JS}</script>"
-             f"<script>{VIEW_TOGGLE_JS}</script></div></body></html>")
+             f"<script>{VIEW_TOGGLE_JS}</script>"
+             f"<script>{PAGE_NAV_JS}</script></div></body></html>")
     return "\n".join(p)
 
 
@@ -1032,6 +1476,8 @@ def md_escape(value) -> str:
 def render_markdown(rows, sequences, analysis, ctx) -> str:
     counts = Counter(r["severity"] for r in rows)
     coverage = ctx.get("coverage", {})
+    priority = review_priority(rows, sequences, ctx)
+    identity = priority["identity"]
     out = [f"# AWS offboarding review - {md_escape(ctx['user'])}", "",
            f"- **Window:** {md_escape(ctx['window'])}",
            f"- **Accounts with activity:** {ctx['n_accounts']}",
@@ -1042,7 +1488,15 @@ def render_markdown(rows, sequences, analysis, ctx) -> str:
            f"- **Last working day:** {md_escape(ctx['last_day'] or 'not supplied')}",
            f"- **Employment status:** {md_escape(EMPLOYMENT_STATUS_LABEL[employment_status(ctx)])}",
            f"- **Findings:** {counts.get(C,0)} critical, {counts.get(H,0)} high, "
-           f"{counts.get(M,0)} medium, {counts.get(L,0)} low", "",
+           f"{counts.get(M,0)} medium, {counts.get(L,0)} low",
+           f"- **Current review priority:** {priority['score']}/10 - "
+           f"{md_escape(priority['label'])}", "",
+           "### Why this score", ""]
+    out += [f"- {md_escape(reason)}" for reason in priority["reasons"]]
+    out += ["", f"**Identity attribution: {md_escape(identity['label'])}.** "
+            f"{md_escape(identity['detail'])}", "",
+           "> This score ranks the evidence for human review. It is not a probability of "
+           "wrongdoing, a judgement of intent, or a rating of the person.", "",
            "> Ratings describe what an action can do, not what it did. Confirm against change "
            "tickets before drawing conclusions.", "",
            "## Reading this report without a technical background", ""]
@@ -1053,6 +1507,14 @@ def render_markdown(rows, sequences, analysis, ctx) -> str:
                         .replace("<code>", "`").replace("</code>", "`"))
         out.append(md_para)
         out.append("")
+
+    out += ["## Offboarding readiness", "",
+            "Evidence ready means this report can support the check. Manual controls still need "
+            "an owner and completion record.", ""]
+    for item in offboarding_readiness(rows, ctx):
+        out += [f"- **{md_escape(item['label'])} - {md_escape(item['title'])}:** "
+                f"{md_escape(item['detail'])}"]
+    out.append("")
 
     if analysis:
         out += ["## Analyst assessment", "",
@@ -1067,6 +1529,15 @@ def render_markdown(rows, sequences, analysis, ctx) -> str:
                            f"{md_escape(a.get('action',''))}  \n   "
                            f"{md_escape(a.get('rationale',''))}")
             out.append("")
+        if analysis.get("pattern_notes"):
+            out += ["### AI-assisted pattern interpretation", ""]
+            for note in analysis["pattern_notes"]:
+                out += [f"**{md_escape(note.get('pattern',''))}**", "",
+                        f"- Plausible routine explanation: "
+                        f"{md_escape(note.get('routine_explanation',''))}",
+                        f"- Concerning hypothesis: "
+                        f"{md_escape(note.get('concerning_explanation',''))}",
+                        f"- What would decide: {md_escape(note.get('deciding_evidence',''))}", ""]
         for key, title in [("blind_spots", "What this data cannot show"),
                            ("questions_for_the_team", "Questions for the team")]:
             if analysis.get(key):
@@ -1084,9 +1555,12 @@ def render_markdown(rows, sequences, analysis, ctx) -> str:
     out += ["## Actions explained", ""]
     for name, evts in groups:
         f = evts[0]
+        assessment = assess_action(evts)
         wild = " · seen in real attacks" if f.get("used_in_wild") else ""
         out += [f"### {md_escape(name)} - {SEV_LABEL[f['severity']]} - "
             f"{md_escape(f['category'])} - {len(evts)}x{wild}", ""]
+        out += [f"**Assessment: {md_escape(assessment['label'])}.** "
+                f"{md_escape(assessment['summary'])}", ""]
         seen = set()
         for e in evts:
             for cf in e.get("content_findings", []):

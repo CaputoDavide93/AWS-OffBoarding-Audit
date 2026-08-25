@@ -22,6 +22,7 @@
 - [Peer Baseline](#-peer-baseline)
 - [CloudTrail Lake](#-cloudtrail-lake)
 - [External Analysis](#-external-analysis)
+- [Offboarding Playbook](#-offboarding-playbook)
 - [Security](#-security)
 - [Testing](#-testing)
 - [Limits](#-limits)
@@ -70,9 +71,14 @@ pass to the Anthropic API, and even that sends a bounded findings digest, never 
   resumable checkpoints
 - 🧩 **Parameter inspection** for external trust, wildcard policies, public resources, long-lived
   credentials, open security groups, destructive lifecycle rules, and logging changes
-- 🔗 **Bounded sequence correlation** requiring ordered activity from the same principal and target
-- 📊 **Interactive dashboard** with search plus severity, account, category, date, and current-state
-  filters
+- 🔗 **Bounded sequence correlation** requiring ordered activity from the same principal, account,
+  target, and time window, with optional two-hypothesis AI interpretation
+- 📊 **Paged interactive dashboard** with a 1-10 evidence review priority plus search and severity,
+  account, category, date, and current-state filters
+- 🧭 **Plain-language assessments** that separate likely routine activity, items to watch, and
+  evidence that needs prompt investigation without claiming to infer intent
+- 📋 **Evidence-aware readiness checklist** that separates report-backed checks from manual
+  identity, credential, session, secret-rotation, and handover controls
 - ✅ **Read-only reconciliation** for IAM users and roles, Lambda URLs, snapshots, buckets, security
   groups, KMS keys, databases, and CloudTrail trails
 - 📈 **Peer baselines** built from comparable historical or colleague audit files
@@ -109,7 +115,9 @@ python3 -m venv .venv
 cp audit-config.example.yaml audit-config.yaml
 ```
 
-`audit-config.yaml` is ignored by Git. Store organization account IDs and SSO settings there.
+`audit-config.yaml` is ignored by Git. Store organization account IDs, SSO settings, timezone, and
+working hours there. The `collector:` block controls collection; the `report:` block controls report
+defaults. Command-line values override both.
 
 ### Check the scope
 
@@ -130,7 +138,6 @@ Preflight discovers accounts and writes the collection plan without querying Clo
   --config audit-config.yaml \
   --notice-date 2026-07-24 \
   --last-day 2026-08-15 \
-  --org-accounts 111122223333 444455556666 \
   --out aws_offboarding_report \
   --open
 ```
@@ -202,7 +209,24 @@ export ANTHROPIC_API_KEY="..."
 ```
 
 `--redact` hashes account IDs and IP addresses before the digest leaves the machine. The returned
-JSON is schema-validated and remains advisory.
+JSON is schema-validated and remains advisory. For each detected activity pattern, the analyst
+compares a plausible routine explanation with a concerning hypothesis and names the evidence that
+would distinguish them. It does not claim to know the person's purpose or intent.
+
+The `Current review priority` score does not require the API. It is calculated locally from timing,
+request-parameter findings, same-principal/same-target patterns, current state, failed attempts,
+baseline deviation, collection coverage, and identity-match quality. The number ranks evidence for
+review; it is not a probability of wrongdoing or a score of the person.
+
+## 📋 Offboarding Playbook
+
+CloudTrail review is only one control in offboarding. Access must also be disabled in the
+authoritative identity provider, active sessions addressed, standalone IAM credentials removed,
+shared secrets rotated, and resources and operational duties transferred to a current owner.
+
+Use the [AWS offboarding playbook](docs/offboarding-playbook.md) for the phased checklist, ownership
+model, closure criteria, evidence boundaries, and links to the AWS guidance behind those controls.
+The generated HTML and Markdown reports include a shorter readiness checklist for each run.
 
 ## 🔒 Security
 
@@ -248,6 +272,7 @@ triggered manually from the GitHub Actions tab.
 | Doc | Type | For |
 | --- | --- | --- |
 | [docs/tutorial-getting-started.md](docs/tutorial-getting-started.md) | Tutorial | First run, synthetic then real |
+| [docs/offboarding-playbook.md](docs/offboarding-playbook.md) | Playbook | Access removal, evidence review, ownership, and closure criteria |
 | [docs/howto-guide.md](docs/howto-guide.md) | How-to | Specific tasks: SSO setup, baselines, Lake, AI analysis, archiving |
 | [docs/reference-cli.md](docs/reference-cli.md) | Reference | Every flag, across all six scripts |
 | [docs/reference-data-contract.md](docs/reference-data-contract.md) | Reference | The event JSON schema, collector → report |

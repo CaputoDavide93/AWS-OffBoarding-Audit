@@ -52,6 +52,7 @@ for i in range(260):
         "time_utc": ts.isoformat(), "account_id": a[0], "account_name": a[1],
         "region": random.choice(regions), "event_source": "ec2.amazonaws.com",
         "event_name": name, "matched_on": "leaver@example.com",
+        "match_mode": "exact",
         "principal_arn": f"arn:aws:sts::{a[0]}:assumed-role/AWSReservedSSO_Admin_x/leaver@example.com",
         "source_ip": random.choice(["82.14.9.201","82.14.9.201","82.14.9.201","185.62.44.7"]),
         "user_agent": "aws-cli/2.15.0",

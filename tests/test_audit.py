@@ -8,7 +8,15 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from audit_intel import C, H, L, M, detect_content
-from aws_audit_report import enrich, group_events, parse_review_date, render_html
+from aws_audit_report import (
+    assess_action,
+    enrich,
+    group_events,
+    offboarding_readiness,
+    parse_review_date,
+    render_html,
+    review_priority,
+)
 from aws_offboarding_audit import (
     _cache_key,
     event_matches_user,
@@ -137,6 +145,107 @@ class ReportTests(unittest.TestCase):
         groups = group_events(rows)
 
         self.assertEqual([name for name, _ in groups], ["ParameterEvidence", "CatalogueCritical"])
+
+    def test_plain_language_assessment_uses_available_evidence(self):
+        routine = enrich(
+            [raw_event("ListBuckets", "2026-08-14T09:00:00+00:00")],
+            {}, self.tz, None, self.last_day, 8, 19, ORG_ACCOUNTS,
+        )
+        watch = enrich(
+            [raw_event("CreateRole", "2026-08-14T09:00:00+00:00")],
+            {}, self.tz, None, self.last_day, 8, 19, ORG_ACCOUNTS,
+        )
+        investigate = enrich(
+            [raw_event(
+                "UpdateAssumeRolePolicy",
+                "2026-08-14T09:00:00+00:00",
+                '{"Principal":{"AWS":"arn:aws:iam::908877665544:root"}}',
+            )],
+            {}, self.tz, None, self.last_day, 8, 19, ORG_ACCOUNTS,
+        )
+
+        self.assertEqual(assess_action(routine)["label"], "Likely routine")
+        self.assertEqual(assess_action(watch)["label"], "Keep an eye on")
+        self.assertEqual(assess_action(investigate)["label"], "Investigate now")
+
+    def test_offboarding_readiness_separates_evidence_from_manual_controls(self):
+        rows = enrich(
+            [raw_event("ListBuckets", "2026-08-16T09:00:00+00:00")],
+            {}, self.tz, None, self.last_day, 8, 19, ORG_ACCOUNTS,
+        )
+        ctx = {
+            "last_day": "2026-08-15",
+            "coverage": {"status": "partial"},
+            "state_metadata": {"available": False},
+        }
+
+        checklist = {item["title"]: item for item in offboarding_readiness(rows, ctx)}
+
+        self.assertEqual(checklist["Set the departure boundary"]["status"], "ready")
+        self.assertEqual(checklist["Confirm audit coverage"]["status"], "attention")
+        self.assertIn("1 event(s)", checklist["Review activity after departure"]["detail"])
+        self.assertEqual(
+            checklist["Disable identity access and revoke sessions"]["status"], "manual"
+        )
+
+    def test_review_priority_scores_evidence_not_the_person(self):
+        routine = enrich(
+            [raw_event("ListBuckets", "2026-08-14T09:00:00+00:00")],
+            {}, self.tz, None, self.last_day, 8, 19, ORG_ACCOUNTS,
+        )
+        routine[0]["match_mode"] = "exact"
+        routine_score = review_priority(
+            routine, [], {"last_day": "2026-08-15", "coverage": {"status": "complete"}}
+        )
+
+        concerning = enrich(
+            [raw_event(
+                "UpdateAssumeRolePolicy",
+                "2026-08-16T09:00:00+00:00",
+                '{"Principal":{"AWS":"arn:aws:iam::908877665544:root"}}',
+            )],
+            {}, self.tz, None, self.last_day, 8, 19, ORG_ACCOUNTS,
+        )
+        concerning_score = review_priority(
+            concerning,
+            [{"confidence": "strong", "title": "External trust chain"}],
+            {"last_day": "2026-08-15", "coverage": {"status": "complete"}},
+        )
+
+        self.assertEqual(routine_score["score"], 1)
+        self.assertEqual(routine_score["label"], "Routine review")
+        self.assertGreaterEqual(concerning_score["score"], 7)
+        self.assertIn("same-principal", " ".join(concerning_score["reasons"]))
+
+    def test_html_report_places_optional_guide_on_its_own_page(self):
+        rows = enrich(
+            [raw_event("ListBuckets", "2026-08-14T09:00:00+00:00")],
+            {}, self.tz, None, self.last_day, 8, 19, ORG_ACCOUNTS,
+        )
+        ctx = {
+            "user": "leaver@example.com", "window": "14 Aug 2026", "n_accounts": 1,
+            "n_regions": 1, "n_events": 1, "notice": None, "last_day": "2026-08-15",
+            "generated": "14 Aug 2026 10:00 BST", "tz": self.tz,
+            "tzname": "Europe/London", "_notice_dt": None,
+            "_last_day_dt": self.last_day,
+        }
+
+        report = render_html(rows, [], None, ctx)
+        summary_start = report.index("data-report-page='summary'")
+        actions_start = report.index("data-report-page='actions'")
+        guide_start = report.index("data-report-page='guide'")
+        guide_heading = report.index("Reading this report without a technical background")
+        readiness_start = report.index("id='readiness'")
+        coverage_start = report.index("id='coverage'")
+
+        self.assertLess(summary_start, actions_start)
+        self.assertLess(actions_start, guide_start)
+        self.assertLess(readiness_start, actions_start)
+        self.assertGreater(coverage_start, actions_start)
+        self.assertLess(coverage_start, guide_start)
+        self.assertGreater(guide_heading, guide_start)
+        self.assertIn("href='#page-guide' data-page-link='guide'", report)
+        self.assertIn("id='page-guide' data-report-page='guide' hidden", report)
 
     def test_post_departure_reads_render_without_other_timeline_ticks(self):
         rows = enrich(

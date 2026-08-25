@@ -12,3 +12,12 @@ collector:
   region_concurrency: 3
   request_params_limit: 32768
   out: aws_offboarding_audit
+
+report:
+  timezone: Europe/London
+  work_start: 8
+  work_end: 19
+  org_accounts:
+    - "111122223333"
+    - "444455556666"
+  sequence_hours: 24
