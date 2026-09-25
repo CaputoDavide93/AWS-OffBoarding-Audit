@@ -1,0 +1,12 @@
+target-version = "py311"
+line-length = 110
+
+[lint]
+select = ["E", "F", "W"]
+# Long prose strings and SQL are common here; readability beats wrapping.
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+"tests/*" = ["E402"]
+# The drawing primitives set fill, edge and text colour together on one line.
+"tools/gen_diagram.py" = ["E702"]

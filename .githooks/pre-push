@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+PYTHON=".venv/bin/python"
+if [ ! -x "$PYTHON" ]; then
+    PYTHON="python3"
+fi
+
+"$PYTHON" scripts/secret_scan.py
+if command -v gitleaks >/dev/null 2>&1; then
+    gitleaks git --redact --no-banner .
+fi
+"$PYTHON" -m unittest discover -s tests
