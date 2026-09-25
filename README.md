@@ -289,3 +289,11 @@ triggered manually from the GitHub Actions tab.
 | [docs/explanation-architecture.md](docs/explanation-architecture.md) | Explanation | Pipeline design, severity model, detector internals, extension points |
 
 Licensed under [MIT](LICENSE).
+
+---
+
+<p align="center">
+  <sub>⭐ If this project helped you, please give it a star! ⭐</sub>
+  <br>
+  <sub>Made with ❤️ by <a href="https://github.com/CaputoDavide93">Davide Caputo</a></sub>
+</p>
