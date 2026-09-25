@@ -14,18 +14,19 @@ The report's purpose is to rank what deserves a human look, not to accuse.
 
 ## The approach: a two-stage, decoupled pipeline
 
-```text
-  AWS (many accounts, IAM Identity Center / federated SSO)
-        │
-        │  aws_offboarding_audit.py     ← collector
-        ▼
-  aws_offboarding_audit.{json,csv,txt,manifest.json,summary.json}
-        │
-        │  aws_audit_report.py          ← orchestrator + renderer
-        │    ├── audit_intel.py         ← knowledge layer (catalogue, detectors)
-        │    └── audit_analyst.py       ← optional Claude API pass
-        ▼
-  aws_offboarding_report.{html,md,summary.json}
+```mermaid
+flowchart TB
+    AWS["☁️ AWS<br/>many accounts, IAM Identity Center / federated SSO"]
+    COL["🔎 aws_offboarding_audit.py<br/>collector"]
+    EV["📄 aws_offboarding_audit.{json,csv,txt,manifest.json,summary.json}"]
+    REP["🧠 aws_audit_report.py<br/>orchestrator + renderer"]
+    INTEL["📚 audit_intel.py<br/>knowledge layer (catalogue, detectors)"]
+    AN["🤖 audit_analyst.py<br/>optional Claude API pass"]
+    OUT["📊 aws_offboarding_report.{html,md,summary.json}"]
+
+    AWS --> COL --> EV --> REP --> OUT
+    REP --- INTEL
+    REP --- AN
 ```
 
 Stage 1 (collect) and stage 2 (report) are decoupled by a JSON file on

@@ -1,33 +1,19 @@
+<div align="center">
+
 # 🛡️ AWS Offboarding Audit
 
-**Cross-account CloudTrail collection, backdoor detection, and a local investigation dashboard for cloud engineer offboarding.**
+**Cross-account CloudTrail collection, backdoor detection, and a local investigation dashboard for cloud engineer offboarding**
 
-[![Security and tests](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml/badge.svg)](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml)
 ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![AWS CloudTrail](https://img.shields.io/badge/AWS-CloudTrail-FF9900?logo=amazonwebservices&logoColor=white)
 ![Read-only](https://img.shields.io/badge/AWS%20access-read--only-2E7D32)
 ![Secrets](https://img.shields.io/badge/Secrets-Gitleaks-2E7D32)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+[![Security and tests](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml/badge.svg)](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml)
 
----
+[Overview](#-overview) • [Features](#-features) • [Architecture](#️-architecture) • [Quick Start](#-quick-start) • [Usage](#-usage) • [Testing](#-testing) • [Documentation](#-documentation)
 
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Read-only, by design](#-read-only-by-design)
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Quick Start](#-quick-start)
-- [Current-State Checks](#-current-state-checks)
-- [Peer Baseline](#-peer-baseline)
-- [CloudTrail Lake](#-cloudtrail-lake)
-- [External Analysis](#-external-analysis)
-- [Offboarding Playbook](#-offboarding-playbook)
-- [Security](#-security)
-- [Testing](#-testing)
-- [Limits](#-limits)
-- [Repo structure](#-repo-structure)
-- [Documentation](#-documentation)
+</div>
 
 ---
 
@@ -55,7 +41,9 @@ The report opens in plain-English mode: a short explainer for HR or an IT lead, 
 the person is still employed, on notice, or already departed. A switch at the top reveals the
 underlying API names, timestamps, regions, and raw request parameters for whoever needs them.
 
-## 🔒 Read-only, by design
+---
+
+## 👁️ Read-only, by design
 
 Every AWS call this project makes is a `Get*`, `List*`, `Describe*`, or `LookupEvents` call: the
 kind you'd use to read state, never to change it. There is no `Create*`, `Put*`, `Delete*`,
@@ -67,37 +55,30 @@ pass to the Anthropic API, and even that sends a bounded findings digest, never 
 account IDs and IP addresses hashed by default. The TrailDiscover catalogue is fetched from a pinned
 commit and verified by SHA-256 before it is used.
 
+---
+
 ## ✨ Features
 
-- 🔎 **Exact identity matching** across SSO usernames, session ARNs, principal IDs, IAM usernames,
-  and Identity Center session issuers
-- 🌍 **Cross-account collection** with per-account and per-region coverage, failures, denials, and
-  resumable checkpoints
-- 🧩 **Parameter inspection** for external trust, wildcard policies, public resources, long-lived
-  credentials, open security groups, destructive lifecycle rules, and logging changes
-- 🔗 **Bounded sequence correlation** requiring ordered activity from the same principal, account,
-  target, and time window, with optional two-hypothesis AI interpretation
-- 📊 **Paged interactive dashboard** with a 1-10 evidence review priority plus search and severity,
-  account, category, date, and current-state filters
-- 🧭 **Plain-language assessments** that separate likely routine activity, items to watch, and
-  evidence that needs prompt investigation without claiming to infer intent
-- 👔 **HR-facing by default**: a non-technical explainer opens first, framed by employment status
-  (employed, on notice, or departed), with a switch to reveal full technical detail on demand
-- 📋 **Evidence-aware readiness checklist** that separates report-backed checks from manual
-  identity, credential, session, secret-rotation, and handover controls
-- ✅ **Read-only reconciliation** for IAM users and roles, Lambda URLs, snapshots, buckets, security
-  groups, KMS keys, databases, and CloudTrail trails
-- 📈 **Peer baselines** built from comparable historical or colleague audit files
-- 🗄️ **CloudTrail Lake support** for management and data events when the event data store records
-  them
-- 🕵️ **Privacy by default**: identifiers are redacted before any analyst call (`--no-redact` to
-  opt out) and analyst web search is opt-in (`--search`)
-- 📌 **Pinned threat intel**: the TrailDiscover dataset is pinned to a reviewed commit and
-  hash-verified, so upstream changes never silently alter report wording
-- 🔐 **Secret-safe workflow** with ignored evidence files, pre-commit and pre-push Gitleaks checks,
-  and optional `age` encryption for archives
+| | Feature | What it does |
+|---|---|---|
+| 🔎 | Exact identity matching | Matches across SSO usernames, session ARNs, principal IDs, IAM usernames, and Identity Center session issuers |
+| 🌍 | Cross-account collection | Per-account and per-region coverage, failures, denials, and resumable checkpoints |
+| 🧩 | Parameter inspection | Checks request parameters for external trust, wildcard policies, public resources, long-lived credentials, open security groups, destructive lifecycle rules, and logging changes |
+| 🔗 | Bounded sequence correlation | Links ordered activity from the same principal, account, target, and time window, with optional two-hypothesis AI interpretation |
+| 📊 | Paged interactive dashboard | A 1-10 evidence review priority plus search and severity, account, category, date, and current-state filters |
+| 🧭 | Plain-language assessments | Separates likely routine activity, items to watch, and evidence that needs prompt investigation without claiming to infer intent |
+| 👔 | HR-facing by default | A non-technical explainer opens first, framed by employment status (employed, on notice, or departed), with a switch to reveal full technical detail on demand |
+| 📋 | Evidence-aware readiness checklist | Separates report-backed checks from manual identity, credential, session, secret-rotation, and handover controls |
+| ✅ | Read-only reconciliation | Checks IAM users and roles, Lambda URLs, snapshots, buckets, security groups, KMS keys, databases, and CloudTrail trails |
+| 📈 | Peer baselines | Built from comparable historical or colleague audit files |
+| 🗄️ | CloudTrail Lake support | Queries management and data events when the event data store records them |
+| 🕵️ | Privacy by default | Identifiers are redacted before any analyst call (`--no-redact` to opt out) and analyst web search is opt-in (`--search`) |
+| 📌 | Pinned threat intel | The TrailDiscover dataset is pinned to a reviewed commit and hash-verified, so upstream changes never silently alter report wording |
+| 🔐 | Secret-safe workflow | Ignored evidence files, pre-commit and pre-push Gitleaks checks, and optional `age` encryption for archives |
 
-## 🏗 Architecture
+---
+
+## 🗺️ Architecture
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
@@ -108,7 +89,9 @@ commit and verified by SHA-256 before it is used.
 Collection and reporting remain separate. You can rebuild the dashboard from saved event JSON
 without querying AWS again.
 
-## ⚡ Quick Start
+---
+
+## 🚀 Quick Start
 
 ### Install
 
@@ -152,7 +135,11 @@ Every command in this README writes to the current directory by default. Point `
 `--raw-out` at `working/` instead (e.g. `--out working/aws_offboarding_report`) to keep generated
 evidence out of the repo root; that path is already gitignored.
 
-## ✅ Current-State Checks
+---
+
+## 📖 Usage
+
+### ✅ Current-State Checks
 
 CloudTrail records a historical change. It cannot prove that the change still exists. Run the
 read-only reconciler after collection:
@@ -171,7 +158,7 @@ read-only reconciler after collection:
 An access-denied state check remains `unknown`. The tool never treats a denied check as proof that
 the resource was removed.
 
-## 📈 Peer Baseline
+### 📈 Peer Baseline
 
 Use at least three comparable peer or historical collections:
 
@@ -184,7 +171,7 @@ Use at least three comparable peer or historical collections:
 Pass the result with `--baseline platform.baseline.json`. Baseline deviation stays separate from
 security severity.
 
-## 🗄 CloudTrail Lake
+### 🗄️ CloudTrail Lake
 
 Review the SQL before executing a Lake query:
 
@@ -201,7 +188,7 @@ Remove `--dry-run` to execute with the active AWS credentials. `start_query`/`ge
 a read query against your event data store, still read-only, no write API involved. Existing Lake
 or Athena JSON/CSV exports can be normalized with `--input <file>`.
 
-## 🔬 External Analysis
+### 🔬 External Analysis
 
 The optional `--analyze` pass sends a bounded findings digest to the Anthropic Messages API. Raw
 CloudTrail logs are not sent. Keep the API key in the process environment:
@@ -225,7 +212,7 @@ request-parameter findings, same-principal/same-target patterns, current state, 
 baseline deviation, collection coverage, and identity-match quality. The number ranks evidence for
 review; it is not a probability of wrongdoing or a score of the person.
 
-## 📋 Offboarding Playbook
+### 📋 Offboarding Playbook
 
 CloudTrail review is only one control in offboarding. Access must also be disabled in the
 authoritative identity provider, active sessions addressed, standalone IAM credentials removed,
@@ -234,6 +221,8 @@ shared secrets rotated, and resources and operational duties transferred to a cu
 Use the [AWS offboarding playbook](docs/offboarding-playbook.md) for the phased checklist, ownership
 model, closure criteria, evidence boundaries, and links to the AWS guidance behind those controls.
 The generated HTML and Markdown reports include a shorter readiness checklist for each run.
+
+---
 
 ## 🔒 Security
 
@@ -253,6 +242,8 @@ when packaging evidence:
 
 See [SECURITY.md](SECURITY.md) for handling and rotation guidance.
 
+---
+
 ## 🧪 Testing
 
 ```bash
@@ -267,7 +258,9 @@ editing a diagram; `tests/test_diagrams.py` fails if the committed SVGs differ f
 CI runs the secret scan, `ruff`, and this same suite plus Gitleaks on every push and pull request to `main`, and can also be
 triggered manually from the GitHub Actions tab.
 
-## ⚠ Limits
+---
+
+## ⚠️ Limits
 
 - Event History covers the most recent 90 days and management events only.
 - Data-event coverage depends on CloudTrail Lake or Athena selectors and retention.
@@ -294,6 +287,8 @@ AWS-OffBoarding-Audit/
 └── requirements.txt
 ```
 
+---
+
 ## 📚 Documentation
 
 | Doc | Type | For |
@@ -306,6 +301,10 @@ AWS-OffBoarding-Audit/
 | [docs/explanation-architecture.md](docs/explanation-architecture.md) | Explanation | Pipeline design, severity model, detector internals, extension points |
 
 The full index is in [docs/README.md](docs/README.md).
+
+---
+
+## 📄 License
 
 Licensed under [MIT](LICENSE).
 
