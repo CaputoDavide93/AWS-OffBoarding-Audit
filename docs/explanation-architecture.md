@@ -291,13 +291,13 @@ detector:
 .venv/bin/python -m unittest discover -s tests -v
 
 # Fixture-driven iteration
-python3 src/test_fixture.py && python3 src/aws_audit_report.py sample.json \
+python3 tests/fixtures/gen_sample.py && python3 src/aws_audit_report.py sample.json \
   --user leaver@example.com --notice-date 2026-07-24 --last-day 2026-08-15 \
   --org-accounts 111122223333 444455556666 777788889999 222233334444 \
   --out test_report
 ```
 
-`test_fixture.py` generates 260 synthetic events seeded deterministically,
+`tests/fixtures/gen_sample.py` generates 260 synthetic events seeded deterministically,
 crafted to trip every content detector. After any change to
 `audit_intel.py`, confirm all detectors still fire:
 

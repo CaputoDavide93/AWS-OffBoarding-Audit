@@ -26,6 +26,7 @@
 - [Security](#-security)
 - [Testing](#-testing)
 - [Limits](#-limits)
+- [Repo structure](#-repo-structure)
 - [Documentation](#-documentation)
 
 ---
@@ -36,7 +37,7 @@ AWS Offboarding Audit reviews a departing engineer's activity across every AWS a
 through IAM Identity Center. It collects CloudTrail events, checks request parameters for durable
 access and destructive changes, and builds a portable HTML dashboard for the security or IT team.
 
-A fully synthetic example is in [docs/example-report.html](docs/example-report.html). Download it
+A fully synthetic example is in [docs/assets/example-report.html](docs/assets/example-report.html). Download it
 and open it locally to see the dashboard before running anything; no account IDs in it are real.
 
 The report separates three different facts:
@@ -255,7 +256,7 @@ See [SECURITY.md](SECURITY.md) for handling and rotation guidance.
 ## 🧪 Testing
 
 ```bash
-.venv/bin/python scripts/secret_scan.py
+.venv/bin/python tools/secret_scan.py
 ruff check .
 .venv/bin/python -m unittest discover -s tests -v
 ```
@@ -277,6 +278,22 @@ triggered manually from the GitHub Actions tab.
 
 ---
 
+## 📁 Repo structure
+
+```text
+AWS-OffBoarding-Audit/
+├── src/                        # 🧠 collector, report builder, dashboard, current-state, Lake, baseline, AI pass
+├── tests/                      # 🧪 unittest suite
+│   └── fixtures/gen_sample.py  # 🎲 writes a synthetic sample.json for demos and tests
+├── tools/                      # 🔧 secret_scan.py (repo scanner) + gen_diagram.py (SVG diagrams)
+├── docs/                       # 📚 tutorial, how-to, reference, explanation, playbook
+│   └── assets/                 # 🖼️ architecture SVGs + synthetic example report
+├── .githooks/                  # 🪝 pre-commit / pre-push secret scan + tests
+├── .github/workflows/          # 🤖 CI: secret scan, ruff, tests, Gitleaks
+├── audit-config.example.yaml   # ⚙️ copy to audit-config.yaml
+└── requirements.txt
+```
+
 ## 📚 Documentation
 
 | Doc | Type | For |
@@ -287,6 +304,8 @@ triggered manually from the GitHub Actions tab.
 | [docs/reference-cli.md](docs/reference-cli.md) | Reference | Every flag, across all six scripts |
 | [docs/reference-data-contract.md](docs/reference-data-contract.md) | Reference | The event JSON schema, collector → report |
 | [docs/explanation-architecture.md](docs/explanation-architecture.md) | Explanation | Pipeline design, severity model, detector internals, extension points |
+
+The full index is in [docs/README.md](docs/README.md).
 
 Licensed under [MIT](LICENSE).
 

@@ -349,7 +349,7 @@ class CliIntegrationTests(unittest.TestCase):
     def test_fixture_report_and_degradation_paths(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = subprocess.run(
-                [sys.executable, str(SRC / "test_fixture.py")],
+                [sys.executable, str(ROOT / "tests" / "fixtures" / "gen_sample.py")],
                 cwd=temp_dir,
                 text=True,
                 capture_output=True,

@@ -212,7 +212,7 @@ share anything.
 ## Run the test suite
 
 ```bash
-.venv/bin/python scripts/secret_scan.py
+.venv/bin/python tools/secret_scan.py
 .venv/bin/python -m unittest discover -s tests -v
 ```
 

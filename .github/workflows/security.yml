@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt ruff
-      - run: python scripts/secret_scan.py
+      - run: python tools/secret_scan.py
       - run: ruff check .
       - run: python -m unittest discover -s tests -v
       - uses: gitleaks/gitleaks-action@v2

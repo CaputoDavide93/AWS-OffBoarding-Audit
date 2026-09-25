@@ -26,7 +26,7 @@ report's dependencies.
 ## Step 2: Generate a synthetic dataset
 
 ```bash
-python3 src/test_fixture.py
+python3 tests/fixtures/gen_sample.py
 ```
 
 This writes `sample.json` — 260 fabricated CloudTrail events with fake

@@ -6,7 +6,7 @@ if [ ! -x "$PYTHON" ]; then
     PYTHON="python3"
 fi
 
-"$PYTHON" scripts/secret_scan.py
+"$PYTHON" tools/secret_scan.py
 if command -v gitleaks >/dev/null 2>&1; then
     gitleaks git --staged --redact --no-banner .
 fi

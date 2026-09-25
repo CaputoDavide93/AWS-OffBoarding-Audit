@@ -1,3 +1,5 @@
+"""Write sample.json: 260 deterministic synthetic CloudTrail events for tests and demos."""
+
 import json
 import random
 from datetime import datetime, timedelta, timezone
