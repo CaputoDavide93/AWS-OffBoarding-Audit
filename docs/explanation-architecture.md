@@ -14,20 +14,11 @@ The report's purpose is to rank what deserves a human look, not to accuse.
 
 ## The approach: a two-stage, decoupled pipeline
 
-```mermaid
-flowchart TB
-    AWS["☁️ AWS<br/>many accounts, IAM Identity Center / federated SSO"]
-    COL["🔎 aws_offboarding_audit.py<br/>collector"]
-    EV["📄 aws_offboarding_audit.{json,csv,txt,manifest.json,summary.json}"]
-    REP["🧠 aws_audit_report.py<br/>orchestrator + renderer"]
-    INTEL["📚 audit_intel.py<br/>knowledge layer (catalogue, detectors)"]
-    AN["🤖 audit_analyst.py<br/>optional Claude API pass"]
-    OUT["📊 aws_offboarding_report.{html,md,summary.json}"]
-
-    AWS --> COL --> EV --> REP --> OUT
-    REP --- INTEL
-    REP --- AN
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/pipeline-dark.svg">
+  <img src="assets/pipeline-light.svg" width="100%"
+       alt="The collector reads CloudTrail management events from every AWS account the SSO session reaches and writes event JSON; the report stage reads only those files, adds the TrailDiscover catalogue and an optional Anthropic analysis, and writes HTML, Markdown and a summary without touching AWS again.">
+</picture>
 
 Stage 1 (collect) and stage 2 (report) are decoupled by a JSON file on
 purpose. The report can be rebuilt any number of times — different

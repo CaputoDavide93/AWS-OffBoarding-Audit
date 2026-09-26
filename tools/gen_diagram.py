@@ -307,8 +307,72 @@ def architecture(scheme):
     return k.render()
 
 
+PIPELINE_ALT = ("The collector reads CloudTrail management events from every AWS account the SSO "
+                "session reaches and writes event JSON; the report stage reads only those files, "
+                "adds the TrailDiscover catalogue and an optional Anthropic analysis, and writes "
+                "HTML, Markdown and a summary without touching AWS again.")
+
+
+def pipeline(scheme):
+    k = Canvas(1336, 604, scheme, PIPELINE_ALT)
+    W, H = 232, 108
+    xa, xb, xc, xd = 40, 344, 736, 1064
+    r1, r2, r3 = 64, 228, 392
+    m1, m2, m3 = r1 + H / 2, r2 + H / 2, r3 + H / 2
+    lbl = dict(size=11.5, font=MONO, colour=k.c["chip"])
+    k.add(
+        k.group(xa - 16, r1 - 40, W + 32, r2 + H + 16 - (r1 - 40), "Stage 1 \u00b7 collect, needs AWS"),
+        k.group(xc - 16, r1 - 40, W + 32, r3 + H + 16 - (r1 - 40), "Stage 2 \u00b7 report, no AWS SDK"),
+
+        # stage 1
+        k.box(xa, r1, W, H, "AWS accounts", ["every account the SSO", "session can reach"],
+              icon="cloud"),
+        card(k, xa, r2, W, H, "Collector", ["aws_offboarding_audit.py",
+             "boto3, read-only calls"], mono=[0], icon="search"),
+        # the seam between the stages
+        card(k, xb, r2, W, H, "Event files", ["aws_offboarding_audit.json",
+             "+ manifest, summary, CSV, text"], mono=[0], icon="file", tone="accent"),
+        # stage 2
+        card(k, xc, r1, W, H, "Knowledge layer", ["audit_intel.py",
+             "catalogue, detectors"], mono=[0], icon="library"),
+        card(k, xc, r2, W, H, "Report", ["aws_audit_report.py",
+             "enrich, rank, render"], mono=[0], icon="chip"),
+        card(k, xc, r3, W, H, "Analyst, optional", ["audit_analyst.py",
+             "runs only with --analyze"], mono=[0, 1], icon="chat"),
+        # outside both stages
+        k.box(xd, r1, W, H, "TrailDiscover", ["pinned commit, SHA-256",
+              "cached; --no-enrich skips it"], icon="globe"),
+        card(k, xd, r2, W, H, "Report files", ["aws_offboarding_report.html",
+             "+ .md and .summary.json"], mono=[0], icon="chart"),
+        k.box(xd, r3, W, H, "Anthropic API", ["redacted digest by default",
+              "advisory, never a verdict"], icon="api"),
+
+        # AWS -> collector
+        k.edge([(xa + 48, r1 + H + 8), (xa + 48, r2 - 8)]),
+        k.text(xa + 60, (r1 + H + r2) / 2 + 4, "management events", **lbl),
+        # collector -> event files -> report
+        k.edge([(xa + W + 8, m2), (xb - 8, m2)], label="writes"),
+        k.edge([(xb + W + 8, m2), (xc - 8, m2)], label="events + manifest"),
+        # catalogue into the knowledge layer, and into the report
+        k.edge([(xd - 8, m1), (xc + W + 8, m1)], label="events.json"),
+        k.edge([(xc + 48, r1 + H + 8), (xc + 48, r2 - 8)]),
+        k.text(xc + 60, (r1 + H + r2) / 2 + 4, "severity, findings", **lbl),
+        # report -> outputs
+        k.edge([(xc + W + 8, m2), (xd - 8, m2)], label="writes"),
+        # the optional analyst round trip
+        k.edge([(xc + 48, r2 + H + 8), (xc + 48, r3 - 8)], dash=True, both=True),
+        k.text(xc + 60, (r2 + H + r3) / 2 + 4, "digest, analysis", **lbl),
+        k.edge([(xc + W + 8, m3), (xd - 8, m3)], dash=True, both=True, label="HTTPS"),
+
+        k.footer("Only stage 1 holds AWS credentials. Stage 2 rebuilds the report from the saved "
+                 "files as often as you like, without querying AWS again."),
+    )
+    return k.render()
+
+
 DIAGRAMS = {
     "architecture": architecture,
+    "pipeline": pipeline,
 }
 
 

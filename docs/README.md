@@ -17,3 +17,4 @@ Docs follow the Diátaxis split: tutorial, how-to, reference, explanation.
 | --- | --- |
 | [assets/example-report.html](assets/example-report.html) | Fully synthetic example report (download and open locally) |
 | [assets/architecture-light.svg](assets/architecture-light.svg) / [assets/architecture-dark.svg](assets/architecture-dark.svg) | Architecture diagram, drawn by `tools/gen_diagram.py` |
+| [assets/pipeline-light.svg](assets/pipeline-light.svg) / [assets/pipeline-dark.svg](assets/pipeline-dark.svg) | Two-stage pipeline diagram, drawn by `tools/gen_diagram.py` |
