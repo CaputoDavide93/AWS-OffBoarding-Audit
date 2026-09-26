@@ -45,15 +45,33 @@ underlying API names, timestamps, regions, and raw request parameters for whoeve
 
 ## 👁️ Read-only, by design
 
-Every AWS call this project makes is a `Get*`, `List*`, `Describe*`, or `LookupEvents` call: the
-kind you'd use to read state, never to change it. There is no `Create*`, `Put*`, `Delete*`,
-`Update*`, `Terminate*`, `Modify*`, `Attach*`/`Detach*`, or `Revoke*` call anywhere in this
-codebase. Running it cannot alter, disable, or delete anything in your AWS accounts.
+Every AWS call this project makes reads state; none changes it. The complete list:
 
-The only network calls that leave AWS entirely are the optional [external analysis](#-external-analysis)
-pass to the Anthropic API, and even that sends a bounded findings digest, never raw logs, with
-account IDs and IP addresses hashed by default. The TrailDiscover catalogue is fetched from a pinned
-commit and verified by SHA-256 before it is used.
+| Service | Calls |
+|---|---|
+| IAM Identity Center | `ListAccounts`, `ListAccountRoles`, `GetRoleCredentials` (short-lived sign-in to each account) |
+| CloudTrail | `LookupEvents`, `GetTrailStatus` |
+| CloudTrail Lake | `StartQuery`, `GetQueryResults` (runs a SQL query over the event data store; it stores nothing) |
+| IAM | `GetUser`, `GetRole`, `ListAccessKeys` |
+| EC2 | `DescribeRegions`, `DescribeSecurityGroups`, `DescribeSnapshots`, `DescribeSnapshotAttribute` |
+| RDS | `DescribeDBInstances`, `DescribeDBClusters` |
+| KMS | `DescribeKey` |
+| Lambda | `GetFunction`, `GetFunctionUrlConfig` |
+| S3 | `HeadBucket`, `GetBucketReplication`, `GetBucketLifecycleConfiguration` |
+
+There is no `Create*`, `Put*`, `Delete*`, `Update*`, `Terminate*`, `Modify*`, `Attach*`/`Detach*`, or
+`Revoke*` call anywhere in this codebase. Running it cannot alter, disable, or delete anything in your
+AWS accounts.
+
+Three things reach beyond AWS:
+
+- **TrailDiscover catalogue** — `aws_audit_report.py` downloads it from GitHub
+  (`raw.githubusercontent.com`) at a pinned commit, verifies it by SHA-256, and caches it for seven
+  days. `--no-enrich` skips it.
+- **Anthropic API** — only with `--analyze` (the [external analysis](#-external-analysis) pass). It
+  sends a bounded findings digest, never raw logs, with account IDs and IP addresses hashed by default.
+- **Google Fonts** — the HTML dashboard links IBM Plex from `fonts.googleapis.com`, so the browser
+  that opens the report fetches it. The script itself makes no such call.
 
 ---
 
