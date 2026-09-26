@@ -4,24 +4,21 @@
   docs/assets/<name>-light.svg
   docs/assets/<name>-dark.svg
 
-Drawn rather than written in Mermaid, because GitHub renders Mermaid on its
-own terms: it picks the theme, pins the version, ignores styling, and decodes
-HTML entities before parsing. Drawn here, there is one rule instead: **GitHub
-sanitises SVG in markdown**, so no <style>, no <script>, no web font and no
-<foreignObject>. Every colour is a presentation attribute and the type is a
-system stack. Each pair is served from one <picture>, which GitHub switches on
-prefers-color-scheme.
+House diagram kit (canonical copy: ~/.claude/skills/new-repo/assets/gen_diagram.py,
+first built for InkFrame-Immich). The engine below the "diagrams" line is shared
+verbatim across repos; only the diagram functions and DIAGRAMS change per repo.
 
-Layout is explicit rather than solved. The diagrams are small enough that
-placing them by hand is cheaper than a layout engine nobody can predict.
+GitHub sanitises SVG in markdown: no <style>, no <script>, no web font, no
+<foreignObject>. Everything is a presentation attribute and the type is a system
+stack. Each pair is served from one <picture>, which GitHub switches on
+prefers-color-scheme. Layout is explicit rather than solved.
 
-House rules: a slate scale, a single accent on the one component that matters
-in each picture, drawn icons rather than emoji, monospace for anything that is
-literally typed, and text contrast at or above 4.5:1 in both schemes.
+House rules: a slate scale, a single accent on the one thing that matters in each
+picture, drawn icons rather than emoji, monospace for anything literally typed,
+text contrast at or above 4.5:1 in both schemes.
 
-Standard library only. After changing a diagram, run:
-
-  python3 tools/gen_diagram.py
+  python3 tools/gen_diagram.py          # write the SVGs
+  python3 tools/gen_diagram.py --check  # exit 1 if any SVG is stale (for CI)
 """
 from __future__ import annotations
 
@@ -45,16 +42,59 @@ SCHEMES = {
 
 # Stroked glyphs on a 24x24 grid, drawn rather than typed.
 ICONS = {
+    "library":  "M3 7h13v11H3z M6 4h13v11 M7 14l3-3 2.5 2.5L15 11l2 2.5",
     "chip":     "M8 8h8v8H8z M5 5h14v14H5z M10 2v3 M14 2v3 M10 19v3 M14 19v3 M2 10h3 M2 14h3 M19 10h3 M19 14h3",
-    "cloud":    "M7 18h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.3 9.2 4.4 4.4 0 0 0 7 18z",
-    "database": "M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6 "
-                "M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3",
-    "document": "M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h6",
-    "chart":    "M4 4v16h16 M8 16v-4 M12 16V8 M16 16v-6",
-    "shield":   "M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z M8.5 12l2.5 2.5 4.5-4.5",
-    "users":    "M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M2.5 20c.6-3.5 3.3-6 6.5-6s5.9 2.5 6.5 6 "
-                "M16 4.5a3.5 3.5 0 0 1 0 6.5 M18 14c2 .7 3.3 2.8 3.5 6",
-    "chat":     "M4 5h16v11H9l-5 4z M8 9.5h8 M8 12.5h5",
+    "frame":    "M3 5h18v12H3z M9 20h6 M12 17v3 M6 13l3.5-4 2.5 3 2-2.5L18 13",
+    "house":    "M4 11 12 4l8 7 M6 10v9h12v-9 M10 19v-5h4v5",
+    "moon":     "M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z",
+    "bolt":     "M13 2 4 14h7l-1 8 9-12h-7z",
+    "server":   "M4 4h16v6H4z M4 14h16v6H4z M7 7h.01 M7 17h.01 M11 7h6 M11 17h6",
+    "database": "M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6 M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3",
+    "cloud":    "M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 9.5 4.3 4.3 0 0 0 7 18z",
+    "laptop":   "M5 5h14v10H5z M2 19h20 M9 19l1-2h4l1 2",
+    "phone":    "M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z M11 18h2",
+    "mail":     "M3 6h18v12H3z M3 7l9 6 9-6",
+    "clock":    "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M12 7v5l3 2",
+    "shield":   "M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z M9 12l2 2 4-4",
+    "box":      "M12 3 3 7.5v9L12 21l9-4.5v-9z M3 7.5 12 12l9-4.5 M12 12v9",
+    "user":     "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21c0-4 3.6-6 8-6s8 2 8 6",
+    "users":    "M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5 M16 4.5a3.5 3.5 0 0 1 0 6.5 M18 14.8c2.4.6 4 2.3 4 5.2",
+    "key":      "M14 10a4 4 0 1 0-3.2 3.9L13 16h2v2h2v2h3v-3l-5.1-5.1c.1-.3.1-.6.1-.9z M8 9h.01",
+    "camera":   "M3 8h4l2-3h6l2 3h4v11H3z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+    "chart":    "M4 20V4 M4 20h16 M8 16v-5 M12 16V8 M16 16v-3",
+    "api":      "M8 7 3 12l5 5 M16 7l5 5-5 5 M14 4l-4 16",
+    "bell":     "M6 16V11a6 6 0 1 1 12 0v5l2 2H4z M10 21h4",
+    "chat":     "M4 5h16v11H9l-5 4z",
+    "gear":     "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.4z",
+    "code":     "M4 4h16v16H4z M9 9l-3 3 3 3 M15 9l3 3-3 3",
+    "tv":       "M3 5h18v12H3z M8 21h8",
+    "play":     "M6 4l14 8-14 8z",
+    "file":     "M6 2h8l5 5v15H6z M14 2v5h5 M9 13h6 M9 17h6",
+    "lock":     "M6 11h12v10H6z M8 11V7a4 4 0 0 1 8 0v4",
+    "globe":    "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M3 12h18 M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9 M12 3c-2.5 2.7-3.8 5.7-3.8 9s1.3 6.3 3.8 9",
+    "wifi":     "M2 9a15 15 0 0 1 20 0 M5.5 12.5a10 10 0 0 1 13 0 M9 16a5 5 0 0 1 6 0 M12 19.5h.01",
+    "disk":     "M3 6h18v12H3z M7 14h.01 M11 14h6",
+    "terminal": "M3 5h18v14H3z M7 10l3 2.5L7 15 M12.5 15h4.5",
+    "calendar": "M4 6h16v15H4z M4 10h16 M8 3v5 M16 3v5 M8 14h2 M14 14h2 M8 17.5h2",
+    "refresh":  "M20 12a8 8 0 1 1-2.3-5.7 M20 4v4.5h-4.5",
+    "search":   "M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 1 0 0-13z M15.5 15.5 20 20",
+    "filter":   "M4 5h16l-6 7.5V19l-4 1.5v-8z",
+    "send":     "M21 3 3 10.5l7.5 3 3 7.5z M10.5 13.5 21 3",
+    "alert":    "M12 3 22 20H2z M12 10v4 M12 17h.01",
+    "archive":  "M3 4h18v4H3z M5 8v12h14V8 M10 12h4",
+    "tag":      "M3 3h8l10 10-8 8L3 11z M7.5 7.5h.01",
+    "user_plus":  "M10 11a4 4 0 1 0 0-8 4 4 0 1 0 0 8z M3 21c0-4 3-7 7-7s7 3 7 7 M19 8v6 M16 11h6",
+    "user_x":     "M10 11a4 4 0 1 0 0-8 4 4 0 1 0 0 8z M3 21c0-4 3-7 7-7s7 3 7 7 M16.5 8.5l5 5 M21.5 8.5l-5 5",
+    "user_check": "M10 11a4 4 0 1 0 0-8 4 4 0 1 0 0 8z M3 21c0-4 3-7 7-7s7 3 7 7 M16 11l2 2 4-4",
+    "bucket":   "M4 6h16l-2 14H6z M4 6c0-1.5 3.6-2.5 8-2.5s8 1 8 2.5",
+    "download": "M12 3v12 M7 10l5 5 5-5 M4 20h16",
+    "wrench":   "M14.7 6.3a4 4 0 0 1 5-1.5l-2.6 2.6.5 2 2 .5 2.6-2.6a4 4 0 0 1-5.4 5.1L10 19.2",
+    "bug":      "M9 7a3 3 0 0 1 6 0 M7 9h10v5a5 5 0 0 1-10 0z M12 9v10 M3 12h4 M17 12h4",
+    "pulse":    "M3 12h4l2.5-6 5 12 2.5-6h4",
+    "sliders":  "M4 6h9 M17 6h3 M4 12h3 M11 12h9 M4 18h11 M19 18h1 M15 4v4 M9 10v4 M17 16v4",
+    "heart":    "M12 20s-7.5-4.6-7.5-10A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 7.5 3c0 5.4-7.5 10-7.5 10z",
+    "sparkle":  "M11 3l1.9 5.6L18.5 10.5l-5.6 1.9L11 18l-1.9-5.6L3.5 10.5l5.6-1.9z",
+    "rewind":   "M11 6 4 12l7 6z M20 6l-7 6 7 6z",
 }
 
 
@@ -141,7 +181,7 @@ class Canvas:
         path = " ".join(f"{x},{y}" for x, y in pts)
         out = [f'<polyline points="{path}" fill="none" stroke="{c["line"]}" '
                f'stroke-width="1.5"{d} marker-end="url(#a)"'
-               + (' marker-start="url(#a)"' if both else "") + "/>"]
+               + (' marker-start="url(#b)"' if both else "") + "/>"]
         if label:
             (x1, y1), (x2, y2) = pts[0], pts[-1]
             lx = x1 + (x2 - x1) * label_at
@@ -173,16 +213,22 @@ class Canvas:
             f'<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
             f'markerHeight="6" orient="auto-start-reverse">'
             f'<path d="M0 0 10 5 0 10z" fill="{c["line"]}"/></marker>'
+            f'<marker id="b" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" '
+            f'markerHeight="6" orient="auto">'
+            f'<path d="M10 0 0 5 10 10z" fill="{c["line"]}"/></marker>'
             f'</defs>' + "".join(self.parts) + "</svg>"
         )
 
+# ── the diagrams ──────────────────────────────────────────────────────────
+# Replace this example with the repository's real architecture. Keep one accent
+# (the component this repo IS), label every edge with what actually crosses it,
+# and say in the footer the one fact a reader must not miss.
 
 def card(k, x, y, w, h, title, subs=(), *, mono=(), icon=None, tone="plain"):
-    """A Canvas box whose sub-lines at the indices in `mono` are set in monospace.
+    """k.box, with the sub-lines at the indices in `mono` set in monospace.
 
-    Canvas.box sets every sub-line in the sans stack. Paths, commands and flags
-    are literally typed, so they are swapped for the monospace stack here,
-    in place, with the box's own position and colour.
+    File names are literally typed, so they take the monospace stack; the swap
+    reuses the box's own position and colour.
     """
     svg = k.box(x, y, w, h, title, subs, icon=icon, tone=tone)
     colour = {"accent": k.c["on_accent"], "warn": k.c["warn"]}.get(tone, k.c["sub"])
@@ -196,59 +242,67 @@ def card(k, x, y, w, h, title, subs=(), *, mono=(), icon=None, tone="plain"):
     return svg
 
 
-def note(k, x, y, s, *, mono=True, anchor="start"):
-    """An edge label placed by hand, for vertical and diagonal edges."""
-    return k.text(x, y, s, size=11.5, font=MONO if mono else SANS,
-                  colour=k.c["chip"], anchor=anchor)
-
-
-# ── the diagrams ──────────────────────────────────────────────────────────
-
 def architecture(scheme):
-    """Two stages joined by one JSON file, and the three optional inputs to the second."""
-    k = Canvas(1180, 544, scheme,
-               "The collector reads every account's CloudTrail Event History through IAM "
-               "Identity Center, and CloudTrail Lake adds data events; both write one event "
-               "JSON file. The report stage turns it into the HTML dashboard, optionally with "
-               "current state, a peer baseline and an external analysis.")
-    W1, W2, W3, W4 = 232, 222, 236, 238
-    x1, x2, x3, x4 = 44, 372, 638, 918
-    H, r1, r2, mid, r3 = 92, 84, 220, 152, 372
-    y = mid + H / 2
+    k = Canvas(1180, 618, scheme,
+               "Event History and CloudTrail Lake both write one event JSON file. The report "
+               "reads it, with optional current state, a peer baseline, the pinned TrailDiscover "
+               "catalogue and an external analysis, and writes the HTML dashboard. Every AWS call "
+               "is a read.")
+    W, H = 268, 108
+    xs, top = [24, 456, 888], 56
+    gap = 80
+    r1, r2, r3 = top, top + H + gap, top + 2 * (H + gap)
+    m1, m2 = r1 + H / 2, r2 + H / 2
+    cx = [x + W / 2 for x in xs]
+    lbl = dict(size=11.5, font=MONO, colour=k.c["chip"])
     k.add(
-        k.group(24, 44, 272, 288, "COLLECT FROM AWS"),
-        card(k, x1, r1, W1, H, "Event History", ["aws_offboarding_audit.py", "every account, via Identity Center"],
-             mono=[0], icon="cloud"),
-        card(k, x1, r2, W1, H, "CloudTrail Lake", ["aws_cloudtrail_lake.py", "data events, SQL or an export"],
-             mono=[0], icon="database"),
-        card(k, x2, mid, W2, H, "Event JSON", ["aws_offboarding_audit.json", "one normalised contract"],
-             mono=[0], icon="document"),
-        card(k, x3, mid, W3, H, "Report", ["aws_audit_report.py", "detectors, review priority"],
-             mono=[0], icon="chip", tone="accent"),
-        card(k, x4, mid, W4, H, "HTML dashboard", ["aws_offboarding_report.html", "plus Markdown and a summary"],
-             mono=[0], icon="chart"),
-        card(k, x2, r3, W2, H, "Current state", ["aws_current_state.py", "does it still exist?"],
-             mono=[0], icon="shield"),
-        card(k, x3, r3, W3, H, "Peer baseline", ["audit_baseline.py", "three or more peer audits"],
-             mono=[0], icon="users"),
-        card(k, x4, r3, W4, H, "External analysis", ["audit_analyst.py", "redacted digest, advisory"],
-             mono=[0], icon="chat"),
-        # Both collectors feed the same contract.
-        k.edge([(x1 + W1 + 8, r1 + H / 2), (x2 - 8, y - 14)]),
-        k.edge([(x1 + W1 + 8, r2 + H / 2), (x2 - 8, y + 14)]),
-        k.edge([(x2 + W2 + 8, y), (x3 - 8, y)]),
-        k.edge([(x3 + W3 + 8, y), (x4 - 8, y)]),
-        # The three optional inputs, each named by the flag that passes it.
-        k.edge([(x2 + W2 / 2, mid + H + 8), (x2 + W2 / 2, r3 - 8)]),
-        note(k, x2 + W2 / 2 + 10, (mid + H + r3) / 2 + 4, "flagged resources", mono=False),
-        k.edge([(x2 + W2 + 8, r3 + H / 2), (x3 + 40, mid + H + 8)]),
-        note(k, x3 + 16, (mid + H + r3) / 2 + 4, "--state"),
-        k.edge([(x3 + W3 / 2, r3 - 8), (x3 + W3 / 2, mid + H + 8)]),
-        note(k, x3 + W3 / 2 + 10, (mid + H + r3) / 2 + 4, "--baseline"),
-        k.edge([(x3 + W3 - 40, mid + H + 8), (x4 - 8, r3 + H / 2)], dash=True, both=True),
-        note(k, x4 - 30, (mid + H + r3) / 2 + 4, "--analyze"),
-        k.footer("Collection and reporting are separate: the dashboard rebuilds from saved event "
-                 "JSON without querying AWS again, and every AWS call either stage makes is a read."),
+        # row 1: two collectors, one contract
+        card(k, xs[0], r1, W, H, "Event History", ["aws_offboarding_audit.py",
+             "every SSO account, last 90 days"], mono=[0], icon="cloud"),
+        card(k, xs[1], r1, W, H, "Event JSON", ["aws_offboarding_audit.json",
+             "one normalised event contract"], mono=[0], icon="file"),
+        card(k, xs[2], r1, W, H, "CloudTrail Lake", ["aws_cloudtrail_lake.py",
+             "a SQL query, or an export file"], mono=[0], icon="database"),
+        # row 2: the report, its state input, its output
+        card(k, xs[0], r2, W, H, "Current state", ["aws_current_state.py",
+             "does the change still exist?"], mono=[0], icon="shield"),
+        card(k, xs[1], r2, W, H, "Report", ["aws_audit_report.py",
+             "detectors, review priority"], mono=[0], icon="chip", tone="accent"),
+        card(k, xs[2], r2, W, H, "HTML dashboard", ["aws_offboarding_report.html",
+             "plus Markdown and a summary"], mono=[0], icon="chart"),
+        # row 3: optional inputs to the report
+        k.box(xs[0], r3, W, H, "TrailDiscover", ["event catalogue, CC BY 4.0",
+              "pinned commit, SHA-256 checked"], icon="globe"),
+        card(k, xs[1], r3, W, H, "Peer baseline", ["audit_baseline.py",
+             "three or more peer audits"], mono=[0], icon="users"),
+        card(k, xs[2], r3, W, H, "Anthropic API", ["audit_analyst.py",
+             "redacted digest, advisory"], mono=[0], icon="chat"),
+
+        # collectors -> contract
+        k.edge([(xs[0] + W + 8, m1), (xs[1] - 8, m1)], label="management events"),
+        k.edge([(xs[2] - 8, m1), (xs[1] + W + 8, m1)], label="data events"),
+        # contract -> report
+        k.edge([(cx[1], r1 + H + 8), (cx[1], r2 - 8)]),
+        k.text(cx[1] + 12, (r1 + H + r2) / 2 + 4, "events + manifest", **lbl),
+        # contract -> current state -> report
+        k.edge([(xs[1] + 44, r1 + H + 8), (xs[1] + 44, r1 + H + 40),
+                (cx[0], r1 + H + 40), (cx[0], r2 - 8)]),
+        k.text(cx[0] + 12, r1 + H + 64, "flagged targets", **lbl),
+        k.edge([(xs[0] + W + 8, m2), (xs[1] - 8, m2)], label="--state"),
+        # report -> dashboard
+        k.edge([(xs[1] + W + 8, m2), (xs[2] - 8, m2)], label="one portable file"),
+        # row 3 -> report
+        k.edge([(xs[0] + W - 40, r3 - 8), (xs[0] + W - 40, r3 - 44),
+                (xs[1] + 44, r3 - 44), (xs[1] + 44, r2 + H + 8)]),
+        k.text(xs[0] + W - 28, r3 - 16, "catalogue", **lbl),
+        k.edge([(cx[1], r3 - 8), (cx[1], r2 + H + 8)]),
+        k.text(cx[1] + 12, r2 + H + 26, "--baseline", **lbl),
+        k.edge([(xs[1] + W - 44, r2 + H + 8), (xs[1] + W - 44, r2 + H + 40),
+                (cx[2], r2 + H + 40), (cx[2], r3 - 8)], dash=True, both=True),
+        k.text(cx[2] + 12, r3 - 16, "--analyze", **lbl),
+
+        k.footer("Every AWS call is a read (Get, List, Describe, LookupEvents, Lake queries); the dashboard "
+                 "rebuilds from saved event JSON without querying AWS again."),
     )
     return k.render()
 
@@ -259,12 +313,26 @@ DIAGRAMS = {
 
 
 def main() -> None:
+    import sys
+    check = "--check" in sys.argv[1:]
     out = ROOT / "docs" / "assets"
     out.mkdir(parents=True, exist_ok=True)
+    stale = []
     for name, fn in DIAGRAMS.items():
         for scheme in SCHEMES:
             path = out / f"{name}-{scheme}.svg"
-            path.write_text(fn(scheme), encoding="utf-8")
+            svg = fn(scheme)
+            if check:
+                if not path.exists() or path.read_text(encoding="utf-8") != svg:
+                    stale.append(str(path.relative_to(ROOT)))
+            else:
+                path.write_text(svg, encoding="utf-8")
+    if check:
+        if stale:
+            print("stale diagrams (run python3 tools/gen_diagram.py):\n  " + "\n  ".join(stale))
+            sys.exit(1)
+        print(f"{len(DIAGRAMS) * len(SCHEMES)} diagram files up to date")
+        return
     print(f"{len(DIAGRAMS)} diagrams x {len(SCHEMES)} schemes -> docs/assets/")
 
 

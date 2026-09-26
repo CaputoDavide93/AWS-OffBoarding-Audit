@@ -83,11 +83,12 @@ commit and verified by SHA-256 before it is used.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
   <img src="docs/assets/architecture-light.svg" width="100%"
-       alt="The collector reads every account's CloudTrail Event History through IAM Identity Center, and CloudTrail Lake adds data events; both write one event JSON file. The report stage turns it into the HTML dashboard, optionally with current state, a peer baseline and an external analysis.">
+       alt="Event History and CloudTrail Lake both write one event JSON file; the report reads it, with optional current state, a peer baseline, the pinned TrailDiscover catalogue and an Anthropic API analysis, and writes the HTML dashboard.">
 </picture>
 
 Collection and reporting remain separate. You can rebuild the dashboard from saved event JSON
-without querying AWS again.
+without querying AWS again. Current state, the peer baseline and the external analysis are optional
+inputs to the report, passed with `--state`, `--baseline` and `--analyze`.
 
 ---
 

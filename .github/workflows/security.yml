@@ -21,6 +21,8 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt ruff
+      - name: Diagrams up to date
+        run: python3 tools/gen_diagram.py --check
       - run: python tools/secret_scan.py
       - run: ruff check .
       - run: python -m unittest discover -s tests -v
