@@ -110,6 +110,16 @@ inputs to the report, passed with `--state`, `--baseline` and `--analyze`.
 
 ---
 
+## 📸 Screenshots
+
+Rendered from the synthetic example report in [`docs/assets/example-report.html`](docs/assets/example-report.html); no real accounts or people.
+
+<img src="docs/assets/screenshots/report-overview.png" width="100%" alt="Report summary page: review window, accounts and events matched, and a 10/10 review priority with the reasons behind it.">
+
+<img src="docs/assets/screenshots/report-findings.png" width="100%" alt="Actions and evidence page: critical findings such as SSH opened to the internet and a database deleted without a final snapshot, each with why it matters and what to verify.">
+
+---
+
 ## 🚀 Quick Start
 
 ### Install
@@ -299,7 +309,7 @@ AWS-OffBoarding-Audit/
 │   └── fixtures/gen_sample.py  # 🎲 writes a synthetic sample.json for demos and tests
 ├── tools/                      # 🔧 secret_scan.py (repo scanner) + gen_diagram.py (SVG diagrams)
 ├── docs/                       # 📚 tutorial, how-to, reference, explanation, playbook
-│   └── assets/                 # 🖼️ architecture SVGs + synthetic example report
+│   └── assets/                 # 🖼️ architecture SVGs, synthetic example report, screenshots/
 ├── .githooks/                  # 🪝 pre-commit / pre-push secret scan + tests
 ├── .github/workflows/          # 🤖 CI: secret scan, ruff, tests, Gitleaks
 ├── audit-config.example.yaml   # ⚙️ copy to audit-config.yaml
