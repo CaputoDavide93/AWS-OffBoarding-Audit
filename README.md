@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/brand/icon-256.png" width="96" height="96" alt="AWS Offboarding Audit icon: a shield with a magnifying glass">
+<img src="docs/assets/brand/icon-256.png" width="96" height="96" alt="AWS Offboarding Audit icon: an arrow leaving a doorway on a teal tile">
 
 # 🛡️ AWS Offboarding Audit
 
@@ -213,7 +213,7 @@ make venv     # once
 make check    # secret scan, ruff, unit tests, diagram freshness
 ```
 
-`make check` runs what CI runs, plus Gitleaks in CI. Tests need no AWS access. `tools/gen_diagram.py` draws the diagrams (standard library only); `make diagram` redraws them. `make screenshots` and `make brand` retake the screenshots and the social preview and are not part of CI.
+`make check` runs what CI runs, plus Gitleaks in CI. Tests need no AWS access. `tools/gen_diagram.py` draws the diagrams (standard library only); `make diagram` redraws them. `make screenshots` and `make social-preview` retake the screenshots and the social preview and are not part of CI; `make check` does verify that the icon matches the vendored brand kit.
 
 ---
 
@@ -233,7 +233,7 @@ AWS-OffBoarding-Audit/
 ├── src/                        # 🧠 collector, report builder, dashboard, current-state, Lake, baseline, analysis pass
 ├── tests/                      # 🧪 unittest suite
 │   └── fixtures/gen_sample.py  # 🎲 writes a synthetic sample.json for demos and tests
-├── tools/                      # 🔧 secret scan, diagram generator, screenshot and brand renderers
+├── tools/                      # 🔧 secret scan, diagram generator, screenshot tool, brand kit
 │   └── screenshots/            # 📸 Playwright script behind make screenshots
 ├── docs/                       # 📚 setup, FAQ, troubleshooting, how it works, reference, playbook
 │   └── assets/                 # 🖼️ diagrams, screenshots, brand icon, social preview, example report
@@ -241,7 +241,7 @@ AWS-OffBoarding-Audit/
 ├── .github/workflows/          # 🤖 CI: secret scan, ruff, tests, diagram check, Gitleaks
 ├── audit-config.example.yaml   # ⚙️ copy to audit-config.yaml
 ├── llms.txt                    # 🔎 one-page summary for AI search
-├── Makefile                    # 🛠️ check, diagram, screenshots, brand
+├── Makefile                    # 🛠️ check, diagram, screenshots, social-preview
 └── requirements.txt
 ```
 

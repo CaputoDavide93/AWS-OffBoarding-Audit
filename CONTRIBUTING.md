@@ -25,4 +25,4 @@ Never attach collector output, report files, credentials or unredacted logs to a
 4. Use conventional commit messages (`fix:`, `feat:`, `docs:`).
 5. Use synthetic data only: the AWS documentation account `123456789012`, `leaver@example.com`, and addresses from `192.0.2.0/24` or `203.0.113.0/24`.
 
-Diagrams are drawn by `tools/gen_diagram.py`; run `make diagram` after editing one. Screenshots are retaken with `make screenshots`.
+Diagrams are drawn by `tools/gen_diagram.py`; run `make diagram` after editing one. Screenshots are retaken with `make screenshots`; the icon and social preview come from `tools/brand/brand_kit.py` (`make social-preview`, needs Google Chrome).
