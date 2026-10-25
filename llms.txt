@@ -1,0 +1,34 @@
+# AWS Offboarding Audit
+
+> AWS Offboarding Audit is a free, open-source (MIT) Python tool for security and IT teams. It reviews what a departing engineer did across every AWS account reachable through IAM Identity Center: it collects their CloudTrail events, checks request parameters for durable access and destructive changes, and builds one self-contained HTML report. Every AWS call it makes is a read; it cannot change or delete anything in your accounts. The report runs locally, and a fully synthetic example can be built or opened without any AWS access.
+
+Key facts:
+
+- Audience: security, IT and cloud teams offboarding an engineer, and HR readers (the report opens in plain English with a switch for technical detail).
+- Data sources: CloudTrail Event History (last 90 days, management events only) or CloudTrail Lake (longer ranges and data events, if your event data store records them).
+- What it flags: external trust in role policies, wildcard policies, public resources, new long-lived credentials, open security groups, destructive lifecycle rules, logging changes, and activity after the last working day.
+- Output: an HTML dashboard, a Markdown report and a JSON summary. Severity ranks what an action can do, not intent; the 1 to 10 review priority orders evidence for a human and is not a probability of wrongdoing.
+- Safety: only read calls (IAM Identity Center, CloudTrail, CloudTrail Lake queries, and describe/get/list/head calls on IAM, EC2, RDS, KMS, Lambda and S3). The full list is in the README.
+- Install: `python3 -m venv .venv`, `.venv/bin/python -m pip install -r requirements.txt`, copy `audit-config.example.yaml` to `audit-config.yaml`, run `aws sso login`, then `src/aws_offboarding_dashboard.py --config audit-config.yaml --preflight`.
+- Requirements: Python 3.10 or newer; for a real run, IAM Identity Center access with a read-only permission set such as SecurityAudit or ReadOnlyAccess in each account.
+- Tested on: Python 3.11 on Linux (CI) and Python 3.14 on macOS, with the unit tests and the synthetic sample. Collection against a real AWS organisation is not covered by the tests and is unverified here. Windows is untested.
+- Network use: an optional download of a pinned, hash-verified event catalogue from GitHub (`--no-enrich` skips it); an optional external analysis pass with `--analyze` that sends a hashed findings digest; the report links web fonts when opened in a browser.
+- Limits: Event History covers 90 days and management events only; identity matching is approximate for Identity Center sessions; denied state checks stay "unknown".
+- Independent project, not affiliated with or endorsed by Amazon Web Services.
+
+## Docs
+
+- [README](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/README.md): why it exists, comparison, features, install, the list of AWS calls
+- [Setup](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/setup.md): install, synthetic run, preflight, collection
+- [FAQ](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/faq.md): safety, data, permissions, limits
+- [Troubleshooting](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/troubleshooting.md): symptoms and fixes
+- [How it works](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/how-it-works.md): the two-stage pipeline and the severity signals
+- [Offboarding playbook](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/offboarding-playbook.md): access removal, evidence review, closure criteria
+
+## Optional
+
+- [How-to guide](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/howto-guide.md)
+- [CLI reference](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/reference-cli.md)
+- [Data contract](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/reference-data-contract.md)
+- [Architecture](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/explanation-architecture.md)
+- [Contributing](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/CONTRIBUTING.md)
