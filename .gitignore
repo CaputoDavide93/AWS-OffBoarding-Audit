@@ -47,3 +47,4 @@ artifacts/
 # Suggested local scratch directory for --out/--raw-out; not required, just
 # a tidy place to point generated files so the repo root stays clean.
 working/
+.venv-screenshots/
