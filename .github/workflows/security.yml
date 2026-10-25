@@ -24,7 +24,7 @@ jobs:
       - name: Diagrams up to date
         run: python3 tools/gen_diagram.py --check
       - name: Icon matches the brand kit
-        run: sh tools/brand/check-icon.sh
+        run: pip install pillow && sh tools/brand/check-icon.sh
       - run: python tools/secret_scan.py
       - run: ruff check .
       - run: python -m unittest discover -s tests -v
