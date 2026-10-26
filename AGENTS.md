@@ -1,30 +1,49 @@
 # Agent instructions
 
-This repository follows Davide Caputo's house standards. The full spec is
-[`reference/STYLE.md` in Repo-Standards](https://github.com/CaputoDavide93/Repo-Standards/blob/main/reference/STYLE.md)
-(private). When this summary and the spec disagree, the spec wins.
+AWS-Offboarding-Audit collects what one departing engineer did across every AWS account (CloudTrail Event History or CloudTrail Lake, read-only calls) and builds a local HTML report. Nothing leaves the machine except the optional analysis pass, which sends a hashed, bounded digest to an external AI service.
 
-## Rules that apply to every change
+## Commands
 
-- **Documentation never lies.** Every command, flag, feature, count and badge must be true of the code. Verify before writing; delete what you can't verify. No hand-typed counts that can drift.
-- **Commits:** conventional (`fix:`, `feat:`, `docs:`, `refactor:`, `ci:`, `chore:`), authored by the repo owner. **Never** add `Co-Authored-By`, `Claude-Session`, "Generated with …" or any other AI attribution — not in commits, PR bodies, issues or comments.
-- **Never** force-push the default branch, commit secrets, or change runtime identifiers (env var names, container/image names, bundle IDs, entity IDs, public URLs) as a side effect.
-- Run the repo's own checks (tests, lint, build, `python3 tools/gen_diagram.py --check`) before and after; anything green before stays green.
+```bash
+make venv     # .venv with boto3, PyYAML and ruff
+make check    # what CI runs: secret scan, ruff, unittest, diagram and icon freshness
+make diagram  # redraw docs/assets/*.svg after editing tools/gen_diagram.py
+.venv/bin/python src/aws_offboarding_dashboard.py --config audit-config.yaml --preflight   # plan only, queries nothing
+python3 tests/fixtures/gen_sample.py   # writes a synthetic sample.json (gitignored) for demos and tests
+```
 
-## README
+Run `make check` before and after every change; anything green before stays green. The scripts in `src/` are run directly, they are not a package.
 
-- Centered header: one emoji H1 (the same emoji as the GitHub description), a **bold** one-line tagline, flat shields.io badges (tech → platform → license → live CI; no `style=`), then `---`.
-- Emoji `##` headings in the canonical order, `---` between sections, features as an emoji-lead table, a repo tree in a ` ```text ` block that matches `git ls-files`.
-- `## 🗺️ Architecture` opens with the house-kit diagram: `tools/gen_diagram.py` writes `docs/assets/architecture-{light,dark}.svg`, embedded with `<picture>` (dark `<source>` + light `<img width="100%">` + a one-sentence alt). No Mermaid for architecture, no ASCII boxes.
-- Screenshots live in `docs/assets/screenshots/<screen>-{light,dark}.png`; public repos use demo data only.
-- The README ends with `---` and then exactly:
-  `<p align="center"><sub>Made with ❤️ by <a href="https://github.com/CaputoDavide93">Davide Caputo</a></sub></p>`
-  (translated only when the README body is in another language). No star request, no extra lines.
+## Layout
 
-## Layout and naming
+| Path | Holds |
+|---|---|
+| `src/aws_offboarding_audit.py` | Collector: accounts, regions, CloudTrail lookups, checkpoint and resume |
+| `src/aws_offboarding_dashboard.py` | One command: preflight, collect, report |
+| `src/aws_audit_report.py` | Report builder (HTML, Markdown, findings, ratings) |
+| `src/aws_current_state.py` | Best-effort current-state checks for the user |
+| `src/aws_cloudtrail_lake.py` | CloudTrail Lake queries |
+| `src/audit_baseline.py`, `src/audit_intel.py`, `src/audit_analyst.py` | Baselines, reference data, optional analysis pass |
+| `tests/` | unittest suite; needs no AWS access. `tests/fixtures/gen_sample.py` writes synthetic events |
+| `tools/` | `secret_scan.py`, `gen_diagram.py`, `brand/`, `screenshots/` |
+| `docs/` | Index in `docs/README.md` |
+| `audit-config.example.yaml` | Template for the gitignored `audit-config.yaml` |
+| `.githooks/` | Pre-commit and pre-push secret scan |
 
-- Directories `lowercase-kebab`; docs `docs/lowercase-kebab.md`; shell scripts `kebab-case.sh`; Python `snake_case`; TS/JS modules `kebab-case`, React components `PascalCase.tsx`. Toolchain rules win (Xcode targets, HA `custom_components/<domain>`, Python import names, Kotlin packages, ESPHome/HA `.yaml`).
-- Root holds only README, LICENSE, SECURITY, CONTRIBUTING, CHANGELOG, AGENTS, CLAUDE (`.md`) plus config files. Code in `src/` (or the toolchain's dir), tests in `tests/`, `scripts/` for things that touch live systems, `tools/` for repo generators, `config/` for samples, docs in `docs/` with `docs/README.md` once there are more than five, superseded material in `docs/archive/YYYY/`.
-- One `.env.example` with every variable the code reads (obviously fake placeholders). Examples are `<name>.example.<ext>`.
+## Conventions
 
-<!-- ── repo-specific notes below this line ─────────────────────────────── -->
+- Every AWS call is read-only. A new call needs a row in the README's call list and a test.
+- Python `snake_case`, directories `lowercase-kebab`, shell scripts `kebab-case.sh`, docs `docs/lowercase-kebab.md` (the docs here use a `kind-topic.md` prefix).
+- Root holds only README, LICENSE, SECURITY, CONTRIBUTING, CHANGELOG, AGENTS (`.md`) plus config files.
+- Commits are conventional (`fix:`, `feat:`, `docs:`, `refactor:`, `ci:`, `chore:`) and authored by the repo owner. No co-author trailers, session ids or "generated by" lines in commits, PRs, issues or comments.
+- Documentation must be true of the code: verify every command, flag and badge, and do not type counts by hand. Diagrams and screenshots are produced by `tools/`; retake them with `make screenshots` when output changes.
+- The README ends with the author footer line and nothing after it.
+- Anything that needs a real AWS organisation is unverified unless it was run against one; say so in the docs.
+
+## Do not change
+
+Runtime identifiers that users script against: the CLI flags of `src/aws_offboarding_audit.py`, `src/aws_audit_report.py` and `src/aws_offboarding_dashboard.py`, the keys of `audit-config.example.yaml`, the output file names (`aws_offboarding_audit.*`, `aws_offboarding_report.*`), and the environment variables `ANTHROPIC_API_KEY` and `AWS_REGION`. The data contract is in `docs/reference-data-contract.md`.
+
+## Secrets and demo data
+
+Never commit secrets, keys, tokens, IP addresses, private hostnames or personal e-mail addresses. `audit-config.yaml`, collector output and report files are gitignored because they hold account ids, ARNs and source IPs; never attach them to an issue. Use synthetic data only: the documentation account `123456789012`, `leaver@example.com`, and addresses from `192.0.2.0/24` or `203.0.113.0/24`. Vulnerabilities go through the process in `SECURITY.md`.
