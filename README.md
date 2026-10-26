@@ -241,6 +241,10 @@ AWS-OffBoarding-Audit/
 ├── .github/workflows/          # 🤖 CI: secret scan, ruff, tests, diagram check, Gitleaks
 ├── audit-config.example.yaml   # ⚙️ copy to audit-config.yaml
 ├── llms.txt                    # 🔎 one-page summary for AI search
+├── CONTRIBUTING.md             # 🤝 how to contribute
+├── SECURITY.md                 # 🔐 security policy
+├── LICENSE                     # 📄 license
+├── ruff.toml                   # 🧹 lint settings
 ├── Makefile                    # 🛠️ check, diagram, screenshots, social-preview
 └── requirements.txt
 ```
