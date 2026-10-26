@@ -2,7 +2,7 @@
 
 ## The problem
 
-When someone leaves — voluntarily or not — the question is always the same:
+When someone leaves, voluntarily or not, the question is always the same:
 *"what did this engineer do across our AWS accounts, what coverage do we
 actually have, and what needs a human to check it?"* Answering that by hand
 means paging through CloudTrail across dozens of accounts and regions,
@@ -21,8 +21,8 @@ The report's purpose is to rank what deserves a human look, not to accuse.
 </picture>
 
 Stage 1 (collect) and stage 2 (report) are decoupled by a JSON file on
-purpose. The report can be rebuilt any number of times — different
-severity tuning, a newly added baseline, a re-run analyst pass — without
+purpose. The report can be rebuilt any number of times (different
+severity tuning, a newly added baseline, a re-run analyst pass) without
 touching AWS again. `aws_cloudtrail_lake.py`, `aws_current_state.py`, and
 `audit_baseline.py` all produce or consume inputs that normalize into the
 same event contract, so they compose freely. See the
@@ -43,19 +43,19 @@ built first: an offboarding audit tool that could itself change account
 state would be a liability during exactly the moment it's meant to reduce
 risk. The only data that leaves the machine at all is the bounded,
 optionally redacted digest sent to an external AI service during the
-[external analysis pass](howto-guide.md#run-the-optional-ai-analysis-pass) —
+[external analysis pass](howto-guide.md#run-the-optional-ai-analysis-pass);
 never raw CloudTrail logs.
 
 ## Trade-offs
 
-**Two severities, not one.** Timing escalation — activity after the last
-working day — inflates otherwise routine events into something urgent. If
+**Two severities, not one.** Timing escalation (activity after the last
+working day) inflates otherwise routine events into something urgent. If
 you sort or filter on a single severity field, a bulk `ListBuckets` call
 made on the wrong afternoon outranks a trust policy that names an external
 AWS account.
 
-- `severity` — display only, drives color and the tally shown at the top.
-- `base_severity` — intrinsic risk from the catalogue and content
+- `severity`: display only, drives color and the tally shown at the top.
+- `base_severity`: intrinsic risk from the catalogue and content
   detectors, drives *all* ordering and filtering.
 
 `group_events()` in `aws_audit_report.py` and `rank()` in
@@ -65,18 +65,18 @@ must stay consistent, or the dashboard and the AI analyst will disagree on
 what matters most.
 
 **Escaped JSON defeats substring matching.** IAM policy documents arrive as
-JSON strings nested inside JSON, sometimes doubly escaped — `"NotAction"`
+JSON strings nested inside JSON, sometimes doubly escaped. `"NotAction"`
 shows up in the raw text as `\"NotAction\"`, so a naive
 `'"notaction"' in raw` check silently never matches. `_inflate()`
 recursively parses embedded JSON strings (depth-capped at 4) and
 `_params()` re-serializes the result, so every detector sees clean,
 structured text. Detectors must always match against the output of
-`_params()`, never the raw field — the trade-off is a bit more parsing
+`_params()`, never the raw field; the trade-off is a bit more parsing
 overhead per event, in exchange for detectors that actually fire.
 
 **`used_in_wild` is a weak signal on its own.** TrailDiscover flags 276 of
 381 cataloged events as "seen in a real attack," including
-`DescribeInstances` and `ListBuckets` — attackers enumerate before they
+`DescribeInstances` and `ListBuckets`. Attackers enumerate before they
 act, so almost anything qualifies. Using the flag alone would flood the
 report with read-only noise. The current rule in `classify_event()`
 escalates only to **medium**, only for non-read events (excluding
@@ -91,13 +91,13 @@ changed something after the last working day (reads excluded).
 Post-departure read-only calls collapse into a single summary tick, and
 identical `(date, event_name, account_id)` triples collapse with a `×n`
 count, hard-capped at 100 ticks. Past roughly 60 entries the spine stops
-being something a human will actually scan — if you add a qualifying
+being something a human will actually scan; if you add a qualifying
 condition, re-run the fixture and eyeball the length.
 
 **Content findings outrank name-based guesses.** A parameter-level
 detection is direct evidence; a catalogue entry keyed on event name is a
 prior. In `enrich()`, when a content finding's severity exceeds the
-catalogue's guess, it raises *both* `severity` and `base_severity` — the
+catalogue's guess, it raises *both* `severity` and `base_severity`, and the
 report trusts what it actually read in the request over what an event name
 usually implies.
 
@@ -108,7 +108,7 @@ These are two different mechanisms and it's worth keeping them separate.
 **Timing escalation** (in `enrich()`) is per-event: any single action
 timestamped after `--last-day` gets `severity` bumped to critical and the
 `"After last working day"` flag, regardless of what else is going on. This
-is unconditional — it doesn't ask whether the person has *actually* left
+is unconditional; it doesn't ask whether the person has *actually* left
 yet, only whether the timestamp is later than the date you supplied.
 
 **Employment status** (`employment_status()` in `aws_audit_report.py`) is
@@ -118,16 +118,16 @@ dates against the real clock at report-build time:
 | Status | Condition | What the report tells HR |
 | --- | --- | --- |
 | `active` | no `--notice-date` or `--last-day` supplied | Nothing is measured against a departure date. Treat this as an ordinary access review. |
-| `notice_period` | a date is supplied, but "now" is still before it | Continued activity is expected — they still have a job to do. Nothing is escalated on timing yet. |
+| `notice_period` | a date is supplied, but "now" is still before it | Continued activity is expected: they still have a job to do. Nothing is escalated on timing yet. |
 | `departed` | `--last-day` is supplied and has passed | Post-departure activity has no ordinary work justification and is the one thing worth chasing immediately. |
 
 This status renders in the HTML report's optional "How to read" page and as
-a plain-English section in Markdown — see `hr_explainer_paragraphs()`. It exists because severity labels
+a plain-English section in Markdown; see `hr_explainer_paragraphs()`. It exists because severity labels
 alone read as verdicts to someone who doesn't know what an API call is;
 this section is the difference between "critical" meaning "call security"
 and meaning "worth one Slack message to check."
 
-If you change the wording, keep it in `hr_explainer_paragraphs()` only —
+If you change the wording, keep it in `hr_explainer_paragraphs()` only;
 both renderers call it, so there is exactly one copy of this text to keep
 accurate.
 
@@ -146,7 +146,7 @@ CloudTrail `eventName`:
 ```
 
 Write for an IT lead who knows AWS but isn't a threat analyst. Say what the
-action actually achieves; avoid "could be used maliciously" — that's true
+action actually achieves; avoid "could be used maliciously", which is true
 of almost everything and tells nobody anything useful. Unmatched events
 fall through `PREFIX_RULES`, then to TrailDiscover's own wording.
 
@@ -166,10 +166,10 @@ if name == "PutBucketNotification":
 
 Severity ladder: **critical** = works without credentials and survives
 offboarding, or destroys data. **high** = meaningful exposure needing
-prompt review. **medium** = worth a question. Don't inflate it — the
+prompt review. **medium** = worth a question. Don't inflate it; the
 report only earns trust if "critical" reliably means something.
 
-**Add a sequence** to `audit_intel.SEQUENCES` — event names that must all
+**Add a sequence** to `audit_intel.SEQUENCES`: event names that must all
 appear, in order, from the same principal and account:
 
 ```python
@@ -197,8 +197,8 @@ it is not a probability, an intent classifier, or a rating of the person.
 
 The optional analyst receives richer context for each sequence: principal,
 account, normalized target, confidence, and timestamps. Its schema requires
-two competing hypotheses — a plausible routine explanation and a concerning
-explanation — plus the concrete evidence that would distinguish them. This
+two competing hypotheses, a plausible routine explanation and a concerning
+explanation, plus the concrete evidence that would distinguish them. This
 is the useful boundary of AI here: it can organize context and propose what
 to verify, but CloudTrail cannot reveal a person's actual purpose.
 
@@ -206,18 +206,18 @@ to verify, but CloudTrail cannot reveal a person's actual purpose.
 
 - **Hard limits of the data source.** `cloudtrail lookup-events` returns
   management events only, 90 days maximum, throttled around 2 req/sec per
-  account per region. Data events — S3 object reads, Lambda invocations —
+  account per region. Data events (S3 object reads, Lambda invocations)
   are absent unless you're using CloudTrail Lake, so the report can show a
   bucket was made public but never whether anything was actually read from
   it.
 - **Blind spots are load-bearing, not just noted.** If `StopLogging` or
-  `PutEventSelectors` appear, some window is genuinely unaudited — the
+  `PutEventSelectors` appear, some window is genuinely unaudited; the
   report surfaces this as a sequence finding rather than staying silent.
   CloudTrail Event History itself retains 90 days independently and can't
   be disabled, which is why it's the cross-check; AWS Config history and
   Cost Explorer can catch resources that appeared with no creation event.
 - **Identity matching is approximate.** For Identity Center sessions, the
-  CloudTrail `Username` field is the role session name — usually the
+  CloudTrail `Username` field is the role session name, usually the
   person's email, but not guaranteed. The collector matches across
   `Username`, `userIdentity.arn`, `principalId`, `userName`, and
   `sessionContext.sessionIssuer.userName`; `--also` adds further
@@ -225,28 +225,28 @@ to verify, but CloudTrail cannot reveal a person's actual purpose.
   events performed *on* the subject, at the cost of false positives).
 - **The analyst pass is advisory, never a verdict.** Its system prompt
   instructs the model to assess artifacts rather than intent and to say
-  plainly when evidence is thin — its output must never be the sole basis
+  plainly when evidence is thin; its output must never be the sole basis
   for an HR or disciplinary decision.
 - **Constants are cross-file.** `SEV_ORDER`, `SEV_LABEL`, and the severity
   constants `C`/`H`/`M`/`L` live in `audit_intel.py` and are imported
   everywhere. The CSS class names in `aws_audit_report.CSS` match those
-  constant *values* (`critical`, `high`, `medium`, `low`) — renaming a
+  constant *values* (`critical`, `high`, `medium`, `low`); renaming a
   constant silently breaks the dashboard's styling.
 
 ## Backlog, roughly by value
 
-1. **Event data store discovery** — detect eligible organization CloudTrail
+1. **Event data store discovery**: detect eligible organization CloudTrail
    Lake stores and show their selectors/retention before the operator picks one.
-2. **Athena import profiles** — first-class SQL profiles for common
+2. **Athena import profiles**: first-class SQL profiles for common
    organization-trail partition layouts.
-3. **Broader current-state reconciliation** — more resource-policy APIs,
+3. **Broader current-state reconciliation**: more resource-policy APIs,
    comparing exact policy statements rather than just presence.
-4. **Stratus Red Team validation** — detonate the matching techniques in a
+4. **Stratus Red Team validation**: detonate the matching techniques in a
    sandbox account and assert the pipeline catches each one.
-5. **Richer baselines** — category, account, region, working-hours,
+5. **Richer baselines**: category, account, region, working-hours,
    source-IP, and target-type distributions with provenance, not just
    event-name means.
-6. **Multi-pass analyst** — per-cluster analysis then synthesis, for large
+6. **Multi-pass analyst**: per-cluster analysis then synthesis, for large
    estates where 55+ finding groups exceed a useful single-prompt digest.
 
 ## References
@@ -254,25 +254,25 @@ to verify, but CloudTrail cannot reveal a person's actual purpose.
 Technique coverage is drawn from these; consult them before adding a
 detector:
 
-- **TrailDiscover** — 381 CloudTrail events, MITRE-mapped, real-incident
+- **TrailDiscover**: 381 CloudTrail events, MITRE-mapped, real-incident
   links. CC BY 4.0, cached weekly to `~/.cache/aws-offboarding-audit/`.
-  <https://github.com/adanalvarez/TrailDiscover> — also exposes an MCP
+  <https://github.com/adanalvarez/TrailDiscover>; also exposes an MCP
   server at `https://mcp.traildiscover.cloud/mcp`.
-- **AWSDoor / Wavestone RiskInsight** — the persistence taxonomy most
+- **AWSDoor / Wavestone RiskInsight**: the persistence taxonomy most
   detectors implement: access key injection, trust policy backdooring,
   `NotAction` abuse, poisoned Lambda layers, event selector tampering, S3
   lifecycle shadow deletion, `LeaveOrganization`.
   <https://www.riskinsight-wavestone.com/en/2025/09/awsdoor-persistence-on-aws/> ·
   <https://github.com/OtterHacker/AWSDoor>
-- **Datadog Stratus Red Team** — granular, safe detonation of these
+- **Datadog Stratus Red Team**: granular, safe detonation of these
   techniques, useful for validation.
   <https://github.com/DataDog/stratus-red-team>
-- **Hacking the Cloud** — IAM persistence catalogue.
+- **Hacking the Cloud**: IAM persistence catalogue.
   <https://hackingthe.cloud/aws/post_exploitation/iam_persistence/>
-- **HackTricks Cloud** — Lambda, EC2, and ECS persistence, including
+- **HackTricks Cloud**: Lambda, EC2, and ECS persistence, including
   version-qualifier and recursion-config techniques.
   <https://cloud.hacktricks.wiki/en/pentesting-cloud/aws-security/aws-persistence/>
-- **TrailAlerts** — Sigma-rule-based CloudTrail detection, useful prior art
+- **TrailAlerts**: Sigma-rule-based CloudTrail detection, useful prior art
   if this ever needs to run continuously rather than on demand.
   <https://github.com/adanalvarez/TrailAlerts>
 
@@ -310,7 +310,7 @@ python3 src/aws_audit_report.py sample.json --user t --no-enrich --out /tmp/t   
 python3 src/aws_audit_report.py sample.json --user t --analyze --out /tmp/t     # no API key → warns, continues
 ```
 
-Both degradation paths must print a warning and still produce a report —
+Both degradation paths must print a warning and still produce a report;
 never let a missing network connection or API key abort the run.
 
 ## Related

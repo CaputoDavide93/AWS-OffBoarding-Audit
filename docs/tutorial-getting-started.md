@@ -1,6 +1,6 @@
 # Tutorial: your first offboarding audit
 
-You'll go from a fresh clone to a working, interactive HTML dashboard — first
+You'll go from a fresh clone to a working, interactive HTML dashboard; first
 against synthetic data (no AWS access needed), then against your own AWS
 organization. By the end you'll have a report you can open in a browser and
 filter by severity, account, and date.
@@ -8,7 +8,7 @@ filter by severity, account, and date.
 ## What you'll need
 
 - Python 3.10+
-- AWS SSO access to the accounts you want to audit (for the real run — the
+- AWS SSO access to the accounts you want to audit (for the real run; the
   synthetic run needs nothing)
 - An IAM Identity Center `sso-session` configured in `~/.aws/config` (see
   [How-to: configure AWS SSO access](howto-guide.md#configure-aws-sso-access))
@@ -29,7 +29,7 @@ report's dependencies.
 python3 tests/fixtures/gen_sample.py
 ```
 
-This writes `sample.json` — 260 fabricated CloudTrail events with fake
+This writes `sample.json`: 260 fabricated CloudTrail events with fake
 account IDs (`111122223333` and friends), deliberately crafted to trip every
 content detector in the codebase. No network calls, no AWS credentials.
 
@@ -86,7 +86,7 @@ audit window:
 A self-contained HTML dashboard summarizing every CloudTrail event tied to
 one identity across every account you can reach, ranked by what the action
 could do and whether it happened before or after the person's last working
-day. Every AWS call involved was read-only — see
+day. Every AWS call involved was read-only; see
 [Explanation: why this is read-only by design](explanation-architecture.md#read-only-by-design).
 
 Next steps:

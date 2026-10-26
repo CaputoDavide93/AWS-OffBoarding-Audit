@@ -2,10 +2,10 @@
 
 Complete flag listing for every script, pulled directly from each
 `argparse` definition. All AWS-facing flags shown here map onto `Get*`,
-`List*`, `Describe*`, or `LookupEvents` calls only — see
+`List*`, `Describe*`, or `LookupEvents` calls only; see
 [Explanation: read-only by design](explanation-architecture.md#read-only-by-design).
 
-## `aws_offboarding_dashboard.py` — one-command collect + report
+## `aws_offboarding_dashboard.py`: one-command collect + report
 
 The orchestrator most people should run. Wraps the collector and reporter
 so you never manually pass audit JSON between the two.
@@ -23,7 +23,7 @@ so you never manually pass audit JSON between the two.
 | `--regions` | str list | — | Explicit region list |
 | `--all-regions` | flag | off | Sweep every enabled region |
 | `--include-reads` | flag | off | Include `Get*`/`List*`/`Describe*` events (usually noise) |
-| `--loose` | flag | off | Match the subject anywhere in the event body, not just identity fields — catches more, more false positives |
+| `--loose` | flag | off | Match the subject anywhere in the event body, not just identity fields: catches more, with more false positives |
 | `--accounts` | str list | — | Restrict collection to these account IDs |
 | `--request-params-limit` | int | 32768 | Max stored size of `request_params` per event, in characters |
 | `--resume` | flag | off | Resume from `<raw-out>.checkpoint.json` |
@@ -46,7 +46,7 @@ so you never manually pass audit JSON between the two.
 | `--out` | str | `aws_offboarding_report` | Prefix for report output files |
 | `--open` | flag | off | Open the HTML report when done |
 
-## `aws_offboarding_audit.py` — collector only
+## `aws_offboarding_audit.py`: collector only
 
 Direct CloudTrail collection without building a report. Use when you only
 want the raw event JSON, or need `--archive`/`--encrypt-recipient`.
@@ -76,7 +76,7 @@ want the raw event JSON, or need `--archive`/`--encrypt-recipient`.
 | `--encrypt-recipient` | str | — | `age` public key to encrypt the archive for |
 | `--out` | str | `aws_offboarding_audit` | Output file prefix (writes `.json`, `.csv`, `.txt`, `.manifest.json`, `.summary.json`) |
 
-## `aws_audit_report.py` — report builder
+## `aws_audit_report.py`: report builder
 
 Builds the dashboard from an existing collector/Lake JSON file. Called
 internally by `aws_offboarding_dashboard.py`; run directly when iterating
@@ -104,7 +104,7 @@ on report rendering (e.g. against `sample.json`).
 | `--redact` / `--no-redact` | flag | on | Hash identifiers before sending to the analyst |
 | `--out` | str | `aws_offboarding_report` | Output file prefix |
 
-## `aws_current_state.py` — read-only reconciliation
+## `aws_current_state.py`: read-only reconciliation
 
 | Flag | Type | Default | Meaning |
 | --- | --- | --- | --- |
@@ -115,10 +115,10 @@ on report rendering (e.g. against `sample.json`).
 | `--out` | path | `aws_offboarding_state.json` | Output snapshot path |
 
 Checks IAM users/roles, Lambda function URLs, EBS snapshots, S3 buckets,
-security groups, KMS keys, RDS instances/clusters, and CloudTrail trails —
+security groups, KMS keys, RDS instances/clusters, and CloudTrail trails;
 all via `Get*`/`List*`/`Describe*` calls.
 
-## `aws_cloudtrail_lake.py` — Lake query / import
+## `aws_cloudtrail_lake.py`: Lake query / import
 
 | Flag | Type | Default | Meaning |
 | --- | --- | --- | --- |
@@ -136,7 +136,7 @@ all via `Get*`/`List*`/`Describe*` calls.
 | `--dry-run` | flag | off | Print the generated SQL, run nothing |
 | `--out` | str | `aws_offboarding_audit` | Output file prefix |
 
-## `audit_baseline.py` — peer baseline builder
+## `audit_baseline.py`: peer baseline builder
 
 | Flag | Type | Default | Meaning |
 | --- | --- | --- | --- |

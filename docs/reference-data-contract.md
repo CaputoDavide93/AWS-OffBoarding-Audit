@@ -1,7 +1,7 @@
 # Data contract reference
 
 The collector emits a flat list of dicts. This is the interface between the
-collection stage and the reporting stage — every field here is either
+collection stage and the reporting stage; every field here is either
 produced by the collector or added by `enrich()` in the report builder.
 
 ## Collector output (per event)
@@ -34,11 +34,11 @@ produced by the collector or added by `enrich()` in the report builder.
 `request_params` is the most valuable field for detection and stays bounded
 because policy documents can be large. The default cap is 32 KiB; the
 collector records whether truncation occurred. Truncation happens in
-`sweep_region`, not in the reporter — by the time a report script sees the
+`sweep_region`, not in the reporter; by the time a report script sees the
 field, the limit has already been applied.
 
 The event JSON stays backward compatible across versions. Collection
-completeness lives in the sidecar `<out>.manifest.json` — never infer full
+completeness lives in the sidecar `<out>.manifest.json`; never infer full
 coverage from an empty event list without reading the manifest, since a
 denied account or region also produces zero events.
 
@@ -50,8 +50,8 @@ After the report builder's `enrich()` runs, each row additionally carries:
 | --- | --- | --- |
 | `_ts` | `datetime` (UTC, tz-aware) | Parsed timestamp |
 | `_local` | `datetime` | Same instant in the configured display timezone |
-| `severity` | str | Display severity, after timing escalation — see [severity model](explanation-architecture.md#severity-two-tracks-not-one) |
-| `base_severity` | str | Intrinsic severity, before timing escalation — drives all sorting and filtering |
+| `severity` | str | Display severity, after timing escalation, see [severity model](explanation-architecture.md#severity-two-tracks-not-one) |
+| `base_severity` | str | Intrinsic severity, before timing escalation, driving all sorting and filtering |
 | `category` | str | e.g. `Persistence`, `Privilege escalation` |
 | `description`, `why`, `verify` | str | Catalogue explanation text |
 | `curated` | bool | Whether this came from the curated catalogue vs. a prefix-based guess |
@@ -62,8 +62,8 @@ After the report builder's `enrich()` runs, each row additionally carries:
 | `flags` | list[str] | e.g. `"After last working day"`, `"Weekend"`, `"Failed: AccessDenied"` |
 | `principal_key` | str | Best available stable principal identifier |
 | `target_type`, `target_id`, `target_key` | str | Normalized target, used for filters and sequence correlation |
-| `current_state` | str | `active` \| `present` \| `removed` \| `unknown` — set when a `--state` file is supplied |
-| `baseline_status` | str | `above` \| `within` \| `insufficient` — set when a `--baseline` file is supplied |
+| `current_state` | str | `active` \| `present` \| `removed` \| `unknown`, set when a `--state` file is supplied |
+| `baseline_status` | str | `above` \| `within` \| `insufficient`, set when a `--baseline` file is supplied |
 
 ## Related
 

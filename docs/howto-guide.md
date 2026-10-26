@@ -28,7 +28,7 @@ URL: ...` and opens a browser tab for approval.
 
 **Troubleshooting:** if login hangs, open the printed URL manually. If the
 CLI reports no matching cache entry, the collector will still discover
-accounts correctly — it re-derives the cache key from `sso_start_url` and
+accounts correctly; it re-derives the cache key from `sso_start_url` and
 `sso_region`, not the session name alone.
 
 ## Set organization defaults once
@@ -65,7 +65,7 @@ report:
   sequence_hours: 24
 ```
 
-`audit-config.yaml` is gitignored — it's expected to hold real account IDs
+`audit-config.yaml` is gitignored; it's expected to hold real account IDs
 and identities you don't want in source control. `collector:` values configure
 AWS collection; `report:` values configure interpretation and display. CLI
 flags take precedence, so person-specific dates can remain in the command.
@@ -80,7 +80,7 @@ already set in the file.
 .venv/bin/python src/aws_offboarding_dashboard.py --config audit-config.yaml --preflight
 ```
 
-Writes `<out>.preflight.json` — the account list, role names, and audit
+Writes `<out>.preflight.json`: the account list, role names, and audit
 window it would use. Makes zero CloudTrail calls; useful for confirming
 you have access to the right accounts before spending an hour on collection.
 
@@ -95,7 +95,7 @@ you have access to the right accounts before spending an hour on collection.
   --open
 ```
 
-Omit `--notice-date`/`--last-day` if the person hasn't left yet — the report
+Omit `--notice-date`/`--last-day` if the person hasn't left yet; the report
 just won't escalate anything to "after last working day."
 
 **Troubleshooting:** if collection is interrupted (network drop, laptop
@@ -120,7 +120,7 @@ still in place. Run the read-only reconciler after collection:
 ```
 
 **Verification:** open the rebuilt dashboard and check the "current state"
-column — entries should read `active`, `present`, `removed`, or `unknown`.
+column; entries should read `active`, `present`, `removed`, or `unknown`.
 
 **Troubleshooting:** an access-denied check always reports `unknown`, never
 `removed`. The tool never infers absence from a denial.
@@ -162,7 +162,7 @@ and optionally include data events:
   --dry-run
 ```
 
-Always run with `--dry-run` first — it prints the generated SQL without
+Always run with `--dry-run` first; it prints the generated SQL without
 executing it. Drop the flag once you've reviewed it. Add
 `--scope management-and-data` to include data events if your event data
 store records them.
@@ -193,7 +193,7 @@ your machine by default; `--no-redact` sends them in clear. Web search is
 off unless you add `--search`.
 
 **Troubleshooting:** missing API key or no network access both degrade
-gracefully — the report still builds, with a printed warning instead of the
+gracefully; the report still builds, with a printed warning instead of the
 analyst section.
 
 ## Package evidence for handoff
