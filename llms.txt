@@ -18,17 +18,17 @@ Key facts:
 
 ## Docs
 
-- [README](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/README.md): why it exists, comparison, features, install, the list of AWS calls
-- [Setup](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/setup.md): install, synthetic run, preflight, collection
-- [FAQ](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/faq.md): safety, data, permissions, limits
-- [Troubleshooting](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/troubleshooting.md): symptoms and fixes
-- [How it works](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/how-it-works.md): the two-stage pipeline and the severity signals
-- [Offboarding playbook](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/offboarding-playbook.md): access removal, evidence review, closure criteria
+- [README](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/README.md): why it exists, comparison, features, install, the list of AWS calls
+- [Setup](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/setup.md): install, synthetic run, preflight, collection
+- [FAQ](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/faq.md): safety, data, permissions, limits
+- [Troubleshooting](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/troubleshooting.md): symptoms and fixes
+- [How it works](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/how-it-works.md): the two-stage pipeline and the severity signals
+- [Offboarding playbook](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/offboarding-playbook.md): access removal, evidence review, closure criteria
 
 ## Optional
 
-- [How-to guide](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/howto-guide.md)
-- [CLI reference](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/reference-cli.md)
-- [Data contract](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/reference-data-contract.md)
-- [Architecture](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/docs/explanation-architecture.md)
-- [Contributing](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/blob/main/CONTRIBUTING.md)
+- [How-to guide](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/howto-guide.md)
+- [CLI reference](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/reference-cli.md)
+- [Data contract](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/reference-data-contract.md)
+- [Architecture](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/docs/explanation-architecture.md)
+- [Contributing](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/blob/main/CONTRIBUTING.md)

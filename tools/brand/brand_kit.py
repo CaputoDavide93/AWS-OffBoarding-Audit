@@ -18,7 +18,7 @@ INK = "#F8FAFC"
 # Family order. Hue steps by 12 slots (12 is coprime with 29), so every repo gets its own
 # hue and neighbours in this list are ~140 degrees apart. Slots span 100..400 degrees: the
 # muddy 40-100 yellow/olive band, where a white glyph cannot hold contrast, is skipped.
-REPOS = ["AWS-OffBoarding-Audit"]
+REPOS = ["AWS-Offboarding-Audit"]
 def hue_of(repo):
     return 172  # fixed hue for this repo
 

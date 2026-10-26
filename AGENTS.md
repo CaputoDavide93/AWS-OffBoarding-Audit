@@ -1,7 +1,7 @@
 # Agent instructions
 
 This repository follows Davide Caputo's house standards. The full spec is
-[`reference/STYLE.md` in repo-standards](https://github.com/CaputoDavide93/repo-standards/blob/main/reference/STYLE.md)
+[`reference/STYLE.md` in Repo-Standards](https://github.com/CaputoDavide93/Repo-Standards/blob/main/reference/STYLE.md)
 (private). When this summary and the spec disagree, the spec wins.
 
 ## Rules that apply to every change

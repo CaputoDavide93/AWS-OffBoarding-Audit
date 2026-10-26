@@ -31,4 +31,4 @@ screenshots: ## Retake docs/assets/screenshots/ from the synthetic sample (not C
 	.venv-screenshots/bin/python tools/screenshots/take_screenshots.py
 
 social-preview: ## Redraw docs/assets/social-preview.png (needs Google Chrome and pillow)
-	python3 tools/brand/brand_kit.py social --repo AWS-OffBoarding-Audit --name "AWS Offboarding Audit" --tagline "Check what a departing engineer did across every AWS account, in one local report" --chip "Read-only AWS calls" --chip "CloudTrail + Lake" --chip "Local HTML dashboard" --chip "Python 3.10+" --icon docs/assets/brand/icon.svg
+	python3 tools/brand/brand_kit.py social --repo AWS-Offboarding-Audit --name "AWS Offboarding Audit" --tagline "Check what a departing engineer did across every AWS account, in one local report" --chip "Read-only AWS calls" --chip "CloudTrail + Lake" --chip "Local HTML dashboard" --chip "Python 3.10+" --icon docs/assets/brand/icon.svg
