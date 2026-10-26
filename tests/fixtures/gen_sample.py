@@ -5,7 +5,6 @@ import random
 from datetime import datetime, timedelta, timezone
 random.seed(11)
 
-ORG = ["111122223333","444455556666","777788889999","222233334444"]
 EXT = "123456789012"
 accts = [("111122223333","prod-platform"),("444455556666","data-lake"),
          ("777788889999","sandbox-dev"),("222233334444","shared-services")]
