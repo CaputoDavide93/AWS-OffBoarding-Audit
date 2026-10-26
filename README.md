@@ -11,7 +11,7 @@
 ![Read-only](https://img.shields.io/badge/AWS%20access-read--only-2E7D32)
 ![Secrets](https://img.shields.io/badge/Secrets-Gitleaks-2E7D32)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
-[![Security and tests](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml/badge.svg)](https://github.com/CaputoDavide93/AWS-OffBoarding-Audit/actions/workflows/security.yml)
+[![Security and tests](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/actions/workflows/security.yml/badge.svg)](https://github.com/CaputoDavide93/AWS-Offboarding-Audit/actions/workflows/security.yml)
 
 [Why](#-why-it-exists) • [Quick Start](#-quick-start) • [Features](#-features) • [Screenshots](#-screenshots) • [Architecture](#️-architecture) • [Tested on](#-supported-and-tested-on) • [Docs](#-documentation) • [Contributing](#-contributing)
 
@@ -229,7 +229,7 @@ make check    # secret scan, ruff, unit tests, diagram freshness
 ## 📁 Repo structure
 
 ```text
-AWS-OffBoarding-Audit/
+AWS-Offboarding-Audit/
 ├── src/                        # 🧠 collector, report builder, dashboard, current-state, Lake, baseline, analysis pass
 ├── tests/                      # 🧪 unittest suite
 │   └── fixtures/gen_sample.py  # 🎲 writes a synthetic sample.json for demos and tests
