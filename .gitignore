@@ -48,3 +48,17 @@ artifacts/
 # a tidy place to point generated files so the repo root stays clean.
 working/
 .venv-screenshots/
+
+# Secrets and credentials: never commit
+secrets.yaml
+secrets.yml
+*.p8
+*.jks
+*.keystore
+*.mobileprovision
+id_rsa
+id_ed25519
+credentials.json
+service-account*.json
+google-services.json
+GoogleService-Info.plist
