@@ -185,8 +185,8 @@ export ANTHROPIC_API_KEY="..."
   --analyze
 ```
 
-Sends a bounded findings digest (not raw logs) to the Anthropic Messages
-API and folds a schema-validated, advisory analysis back into the report.
+Sends a bounded findings digest (not raw logs) to an external AI service
+and folds a schema-validated, advisory analysis back into the report.
 
 Account IDs and IP addresses are salted and hashed before anything leaves
 your machine by default; `--no-redact` sends them in clear. Web search is

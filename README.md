@@ -102,7 +102,7 @@ Three things reach beyond AWS:
 - **TrailDiscover catalogue:** `aws_audit_report.py` downloads it from GitHub
   (`raw.githubusercontent.com`) at a pinned commit, verifies it by SHA-256, and caches it for seven
   days. `--no-enrich` skips it.
-- **Anthropic API:** only with `--analyze` (see [Usage](#-usage)). It
+- **External AI service:** only with `--analyze` (see [Usage](#-usage)). It
   sends a bounded findings digest, never raw logs, with account IDs and IP addresses hashed by default.
 - **Google Fonts:** the HTML dashboard links IBM Plex from `fonts.googleapis.com`, so the browser
   that opens the report fetches it. The script itself makes no such call.
@@ -147,7 +147,7 @@ Taken by `make screenshots` from the synthetic sample: no real accounts or peopl
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
   <img src="docs/assets/architecture-light.svg" width="100%"
-       alt="Event History and CloudTrail Lake both write one event JSON file; the report reads it, with optional current state, a peer baseline, the pinned TrailDiscover catalogue and an Anthropic API analysis, and writes the HTML dashboard.">
+       alt="Event History and CloudTrail Lake both write one event JSON file; the report reads it, with optional current state, a peer baseline, the pinned TrailDiscover catalogue and an external AI service analysis, and writes the HTML dashboard.">
 </picture>
 
 Collection and reporting remain separate. You can rebuild the dashboard from saved event JSON

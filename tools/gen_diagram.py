@@ -275,7 +275,7 @@ def architecture(scheme):
               "pinned commit, SHA-256 checked"], icon="globe"),
         card(k, xs[1], r3, W, H, "Peer baseline", ["audit_baseline.py",
              "three or more peer audits"], mono=[0], icon="users"),
-        card(k, xs[2], r3, W, H, "Anthropic API", ["audit_analyst.py",
+        card(k, xs[2], r3, W, H, "External AI service", ["audit_analyst.py",
              "redacted digest, advisory"], mono=[0], icon="chat"),
 
         # collectors -> contract
@@ -309,7 +309,7 @@ def architecture(scheme):
 
 PIPELINE_ALT = ("The collector reads CloudTrail management events from every AWS account the SSO "
                 "session reaches and writes event JSON; the report stage reads only those files, "
-                "adds the TrailDiscover catalogue and an optional Anthropic analysis, and writes "
+                "adds the TrailDiscover catalogue and an optional external AI analysis, and writes "
                 "HTML, Markdown and a summary without touching AWS again.")
 
 
@@ -344,7 +344,7 @@ def pipeline(scheme):
               "cached; --no-enrich skips it"], icon="globe"),
         card(k, xd, r2, W, H, "Report files", ["aws_offboarding_report.html",
              "+ .md and .summary.json"], mono=[0], icon="chart"),
-        k.box(xd, r3, W, H, "Anthropic API", ["redacted digest by default",
+        k.box(xd, r3, W, H, "External AI service", ["redacted digest by default",
               "advisory, never a verdict"], icon="api"),
 
         # AWS -> collector
