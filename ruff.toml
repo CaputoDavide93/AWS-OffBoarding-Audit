@@ -10,3 +10,5 @@ ignore = ["E501"]
 "tests/*" = ["E402"]
 # The drawing primitives set fill, edge and text colour together on one line.
 "tools/gen_diagram.py" = ["E702"]
+# Vendored brand kit, kept as shipped so it stays diffable against the original.
+"tools/brand/brand_kit.py" = ["E401", "E701", "E702", "E731", "E741", "F541", "F841"]

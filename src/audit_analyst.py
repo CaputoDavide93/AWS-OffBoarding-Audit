@@ -1,12 +1,12 @@
 """
-audit_analyst.py — optional Claude-powered analysis pass over the findings.
+audit_analyst.py — optional AI-powered analysis pass over the findings.
 
 The catalogue in audit_intel.py tells you what an API call does. It cannot tell
 you whether *this* engineer doing *this* action on *this* day was their job.
 That judgement needs context, and it needs someone to notice that three
 unremarkable events form one unremarkable-looking chain.
 
-This module sends a structured digest of the findings to Claude with web search
+This module sends a structured digest of the findings to an external AI service with web search
 enabled, so it can look up event names the catalogue does not cover and check
 whether a technique has been seen recently in the wild. It returns a written
 assessment, a prioritised investigation queue, and the questions a reviewer

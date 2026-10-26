@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-IGNORED_PARTS = {".git", ".venv", "__pycache__"}
+IGNORED_PARTS = {".git", ".venv", ".venv-screenshots", "__pycache__"}
 SENSITIVE_NAMES = {
     ".env", "credentials", "id_rsa", "id_ed25519",
 }

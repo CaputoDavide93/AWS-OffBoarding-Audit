@@ -18,7 +18,7 @@ repository scanner and Gitleaks. Review `git diff --cached` before every push.
 
 ## API Keys
 
-Provide `ANTHROPIC_API_KEY` through the process environment. Do not pass it through chat, commit it,
+Provide the key for the optional external AI service (`ANTHROPIC_API_KEY`) through the process environment. Do not pass it through chat, commit it,
 store it in YAML, or include it in issue and pull-request text.
 
 ## If A Secret Is Exposed

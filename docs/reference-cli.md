@@ -39,7 +39,7 @@ so you never manually pass audit JSON between the two.
 | `--baseline` | path | — | Peer baseline from `audit_baseline.py` |
 | `--sequence-hours` | int | 24 | Max gap between events for sequence correlation |
 | `--no-enrich` | flag | off | Skip the TrailDiscover catalogue download |
-| `--analyze` | flag | off | Run the optional Claude API analysis pass |
+| `--analyze` | flag | off | Run the optional external AI analysis pass |
 | `--search` / `--no-search` | flag | off | Let the analyst use web search (opt-in) |
 | `--redact` / `--no-redact` | flag | on | Hash account IDs and IPs before the analyst digest leaves the machine |
 | `--model` | str | — | Override the analyst model |
@@ -98,7 +98,7 @@ on report rendering (e.g. against `sample.json`).
 | `--work-end` | int | 19 | End of business hours (24h) |
 | `--no-enrich` | flag | off | Skip TrailDiscover download |
 | `--refresh-intel` | flag | off | Force-refresh the cached TrailDiscover dataset |
-| `--analyze` | flag | off | Run the Claude analyst pass |
+| `--analyze` | flag | off | Run the external AI analyst pass |
 | `--model` | str | `claude-sonnet-5` | Analyst model |
 | `--search` / `--no-search` | flag | off | Let the analyst use web search (opt-in) |
 | `--redact` / `--no-redact` | flag | on | Hash identifiers before sending to the analyst |

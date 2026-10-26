@@ -17,7 +17,7 @@ The report's purpose is to rank what deserves a human look, not to accuse.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/pipeline-dark.svg">
   <img src="assets/pipeline-light.svg" width="100%"
-       alt="The collector reads CloudTrail management events from every AWS account the SSO session reaches and writes event JSON; the report stage reads only those files, adds the TrailDiscover catalogue and an optional Anthropic analysis, and writes HTML, Markdown and a summary without touching AWS again.">
+       alt="The collector reads CloudTrail management events from every AWS account the SSO session reaches and writes event JSON; the report stage reads only those files, adds the TrailDiscover catalogue and an optional external AI analysis, and writes HTML, Markdown and a summary without touching AWS again.">
 </picture>
 
 Stage 1 (collect) and stage 2 (report) are decoupled by a JSON file on
@@ -42,7 +42,7 @@ anywhere. This is a deliberate constraint, not an accident of what got
 built first: an offboarding audit tool that could itself change account
 state would be a liability during exactly the moment it's meant to reduce
 risk. The only data that leaves the machine at all is the bounded,
-optionally redacted digest sent to the Anthropic API during the
+optionally redacted digest sent to an external AI service during the
 [external analysis pass](howto-guide.md#run-the-optional-ai-analysis-pass) —
 never raw CloudTrail logs.
 
