@@ -264,18 +264,18 @@ def architecture(scheme):
         card(k, xs[2], r1, W, H, "CloudTrail Lake", ["aws_cloudtrail_lake.py",
              "a SQL query, or an export file"], mono=[0], icon="database"),
         # row 2: the report, its state input, its output
-        card(k, xs[0], r2, W, H, "Current state", ["aws_current_state.py",
+        card(k, xs[0], r2, W, H, "Current State", ["aws_current_state.py",
              "does the change still exist?"], mono=[0], icon="shield"),
         card(k, xs[1], r2, W, H, "Report", ["aws_audit_report.py",
              "detectors, review priority"], mono=[0], icon="chip", tone="accent"),
-        card(k, xs[2], r2, W, H, "HTML dashboard", ["aws_offboarding_report.html",
+        card(k, xs[2], r2, W, H, "HTML Dashboard", ["aws_offboarding_report.html",
              "plus Markdown and a summary"], mono=[0], icon="chart"),
         # row 3: optional inputs to the report
         k.box(xs[0], r3, W, H, "TrailDiscover", ["event catalogue, CC BY 4.0",
               "pinned commit, SHA-256 checked"], icon="globe"),
-        card(k, xs[1], r3, W, H, "Peer baseline", ["audit_baseline.py",
+        card(k, xs[1], r3, W, H, "Peer Baseline", ["audit_baseline.py",
              "three or more peer audits"], mono=[0], icon="users"),
-        card(k, xs[2], r3, W, H, "External AI service", ["audit_analyst.py",
+        card(k, xs[2], r3, W, H, "External AI Service", ["audit_analyst.py",
              "redacted digest, advisory"], mono=[0], icon="chat"),
 
         # collectors -> contract
@@ -325,26 +325,26 @@ def pipeline(scheme):
         k.group(xc - 16, r1 - 40, W + 32, r3 + H + 16 - (r1 - 40), "Stage 2 \u00b7 report, no AWS SDK"),
 
         # stage 1
-        k.box(xa, r1, W, H, "AWS accounts", ["every account the SSO", "session can reach"],
+        k.box(xa, r1, W, H, "AWS Accounts", ["every account the SSO", "session can reach"],
               icon="cloud"),
         card(k, xa, r2, W, H, "Collector", ["aws_offboarding_audit.py",
              "boto3, read-only calls"], mono=[0], icon="search"),
         # the seam between the stages
-        card(k, xb, r2, W, H, "Event files", ["aws_offboarding_audit.json",
+        card(k, xb, r2, W, H, "Event Files", ["aws_offboarding_audit.json",
              "+ manifest, summary, CSV, text"], mono=[0], icon="file", tone="accent"),
         # stage 2
-        card(k, xc, r1, W, H, "Knowledge layer", ["audit_intel.py",
+        card(k, xc, r1, W, H, "Knowledge Layer", ["audit_intel.py",
              "catalogue, detectors"], mono=[0], icon="library"),
         card(k, xc, r2, W, H, "Report", ["aws_audit_report.py",
              "enrich, rank, render"], mono=[0], icon="chip"),
-        card(k, xc, r3, W, H, "Analyst, optional", ["audit_analyst.py",
+        card(k, xc, r3, W, H, "Optional Analyst", ["audit_analyst.py",
              "runs only with --analyze"], mono=[0, 1], icon="chat"),
         # outside both stages
         k.box(xd, r1, W, H, "TrailDiscover", ["pinned commit, SHA-256",
               "cached; --no-enrich skips it"], icon="globe"),
-        card(k, xd, r2, W, H, "Report files", ["aws_offboarding_report.html",
+        card(k, xd, r2, W, H, "Report Files", ["aws_offboarding_report.html",
              "+ .md and .summary.json"], mono=[0], icon="chart"),
-        k.box(xd, r3, W, H, "External AI service", ["redacted digest by default",
+        k.box(xd, r3, W, H, "External AI Service", ["redacted digest by default",
               "advisory, never a verdict"], icon="api"),
 
         # AWS -> collector
